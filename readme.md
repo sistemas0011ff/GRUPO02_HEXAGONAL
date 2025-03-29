@@ -33,3 +33,8 @@ https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=shari
 - Subida del servicio dockerizado a AWS ECR
 - Despliegue de Web en AWS ECS    
 - Recurso: CLASE02_INSTALACION_DOCKERIZACION
+
+## Clase 03
+
+### **Herramientas e instadores**
+-- [Clase 03 - Herramientas e Instaladores](Recursos/CLASE02-herramientas-instaladores.md)
