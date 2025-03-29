@@ -47,6 +47,26 @@ docker pull mongo:6.0.6
 docker pull postgres:15.3
 ```
 
+### Opcionales
+
+* [nvm mac](https://github.com/nvm-sh/nvm?tab=readme-ov-file#about)
+
+```
+About
+Installing and Updating
+Install & Update Script
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+
+Uso:
+nvm use 10
+nvm use 18
+```
+
+* [nvm windows](https://github.com/coreybutler/nvm-windows)
+Install nvm-windows
+Use the latest installer (comes with an uninstaller). Alternatively, follow the manual installation guide.
+* [últimos releses] (https://github.com/coreybutler/nvm-windows/releases)
+nvm-setup.exe   
 
 ## Extensiones de VSCode
 
