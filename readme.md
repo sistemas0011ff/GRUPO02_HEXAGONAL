@@ -16,6 +16,7 @@ https://drive.google.com/file/d/1H36C63m417buP4GjMQJ6yA1hzNvgeVbI/view?usp=shari
 - Conciendo el ecosistema de AWS
 - Pesentación de los múltiples servicios
 - Preguntas y Respuestas
+- Tutorial base para creación de cuenta AWS: https://www.youtube.com/watch?v=CLoaGGWJT80&ab_channel=TutoVip
 
 ## Clase 02
 https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=sharing
