@@ -37,4 +37,4 @@ https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=shari
 ## Clase 03
 
 ### **Herramientas e instadores**
--- [Clase 03 - Herramientas e Instaladores](Recursos/CLASE02-herramientas-instaladores.md)
+-- [Clase 03 - Herramientas e Instaladores](Recursos/CLASE03-herramientas-instaladores.md)
