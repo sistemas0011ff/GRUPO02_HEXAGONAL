@@ -1,4 +1,4 @@
-# 馃敹 Arquitectura Hexagonal y Domain-Driven Design Avanzado 馃敹
+# 馃敺 Arquitectura Hexagonal y Domain-Driven Design Avanzado 馃敺
 
 ## Instructores
 - **Ingeniero de Software**: Especialista en patrones de arquitectura y desarrollo de software (Eduardo F. G.)
@@ -35,55 +35,55 @@ https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=shari
 - Recurso: CLASE02_INSTALACION_DOCKERIZACION
 
 ## Clase 03
-
 ### **Herramientas e instadores**
 https://drive.google.com/file/d/11yZzuD8dEBhR74kk8Utyv3Dbx8NhMoV9/view
 
 -- [Herramientas e Instaladores](Recursos/CLASE03-herramientas-instaladores.md)
--- [Emulador de entorno TypeScript] https://www.typescriptlang.org/play/
--- [Código base 01] Recursos/CLASE03-TS_BASE_01.ts
-#### Conceptos Básicos de TypeScript
+-- [Emulador de entorno TypeScript](https://www.typescriptlang.org/play/)
+-- [C贸digo base 01](Recursos/CLASE03-TS_BASE_01.ts)
+
+#### Conceptos B谩sicos de TypeScript
 ##### Strings en TypeScript
-* Declaración de variables string
-* Concatenación de strings
-* Métodos comunes (length, toUpperCase, includes, substring)
+* Declaraci贸n de variables string
+* Concatenaci贸n de strings
+* M茅todos comunes (length, toUpperCase, includes, substring)
 
 ##### Numbers en TypeScript
 * Enteros (positivos, negativos, cero)
-* Números decimales (punto flotante)
-* Notación científica
-* Sistemas numéricos (binario, octal)
-* Operaciones aritméticas básicas (suma, división, módulo)
+* N煤meros decimales (punto flotante)
+* Notaci贸n cient铆fica
+* Sistemas num茅ricos (binario, octal)
+* Operaciones aritm茅ticas b谩sicas (suma, divisi贸n, m贸dulo)
 * Conversiones (String a Number, parseInt)
-* Separador numérico con guion bajo para legibilidad
+* Separador num茅rico con guion bajo para legibilidad
 
 ##### Symbol
-* Creación de símbolos
-* Comparación de símbolos (demuestra que son únicos)
+* Creaci贸n de s铆mbolos
+* Comparaci贸n de s铆mbolos (demuestra que son 煤nicos)
 
 ##### Arrays
 * Arrays de strings (dos sintaxis: string[] y Array<string>)
-* Arrays de números
-* Modificación de elementos en arrays
+* Arrays de n煤meros
+* Modificaci贸n de elementos en arrays
 
 ##### Objetos
-* Objetos genéricos
-* Objetos con tipos específicos
+* Objetos gen茅ricos
+* Objetos con tipos espec铆ficos
 * Objetos anidados
 
 ##### Tuplas
-* Definición de tuplas con tipos específicos
-* Modificación de tuplas con push
+* Definici贸n de tuplas con tipos espec铆ficos
+* Modificaci贸n de tuplas con push
 
 ##### Any
 * Uso del tipo any para variables de tipo flexible
 
 ##### Types personalizados
-* Definición de types
-* Combinación de types con el operador & (intersección)
-* Uso de operadores de unión (|) con types
+* Definici贸n de types
+* Combinaci贸n de types con el operador & (intersecci贸n)
+* Uso de operadores de uni贸n (|) con types
 
 ##### Funciones
-* Funciones con parámetros tipados
+* Funciones con par谩metros tipados
 * Callbacks tipados
-* Implementación y uso de funciones
+* Implementaci贸n y uso de funciones
