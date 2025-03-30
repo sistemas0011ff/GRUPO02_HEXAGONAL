@@ -37,4 +37,53 @@ https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=shari
 ## Clase 03
 
 ### **Herramientas e instadores**
--- [Clase 03 - Herramientas e Instaladores](Recursos/CLASE03-herramientas-instaladores.md)
+https://drive.google.com/file/d/11yZzuD8dEBhR74kk8Utyv3Dbx8NhMoV9/view
+
+-- [Herramientas e Instaladores](Recursos/CLASE03-herramientas-instaladores.md)
+-- [Emulador de entorno TypeScript] https://www.typescriptlang.org/play/
+-- [C車digo base 01] Recursos/CLASE03-TS_BASE_01.ts
+#### Conceptos B芍sicos de TypeScript
+##### Strings en TypeScript
+* Declaraci車n de variables string
+* Concatenaci車n de strings
+* M谷todos comunes (length, toUpperCase, includes, substring)
+
+##### Numbers en TypeScript
+* Enteros (positivos, negativos, cero)
+* N迆meros decimales (punto flotante)
+* Notaci車n cient赤fica
+* Sistemas num谷ricos (binario, octal)
+* Operaciones aritm谷ticas b芍sicas (suma, divisi車n, m車dulo)
+* Conversiones (String a Number, parseInt)
+* Separador num谷rico con guion bajo para legibilidad
+
+##### Symbol
+* Creaci車n de s赤mbolos
+* Comparaci車n de s赤mbolos (demuestra que son 迆nicos)
+
+##### Arrays
+* Arrays de strings (dos sintaxis: string[] y Array<string>)
+* Arrays de n迆meros
+* Modificaci車n de elementos en arrays
+
+##### Objetos
+* Objetos gen谷ricos
+* Objetos con tipos espec赤ficos
+* Objetos anidados
+
+##### Tuplas
+* Definici車n de tuplas con tipos espec赤ficos
+* Modificaci車n de tuplas con push
+
+##### Any
+* Uso del tipo any para variables de tipo flexible
+
+##### Types personalizados
+* Definici車n de types
+* Combinaci車n de types con el operador & (intersecci車n)
+* Uso de operadores de uni車n (|) con types
+
+##### Funciones
+* Funciones con par芍metros tipados
+* Callbacks tipados
+* Implementaci車n y uso de funciones
