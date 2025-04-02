@@ -5,7 +5,7 @@
 - **Ingeniero Cloud**: Experto en implementaciones y soluciones en AWS (J. Manuel Fajardo Gutiérrez)
 
 ## Clase 01
-https://drive.google.com/file/d/1H36C63m417buP4GjMQJ6yA1hzNvgeVbI/view?usp=sharing
+Grabación: https://drive.google.com/file/d/1H36C63m417buP4GjMQJ6yA1hzNvgeVbI/view?usp=sharing
 
 ### **Instalación de Git | Instalación de Docker**
 - Instalación de Git
