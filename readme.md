@@ -19,7 +19,7 @@ Grabación: https://drive.google.com/file/d/1H36C63m417buP4GjMQJ6yA1hzNvgeVbI/vi
 - Tutorial base para creación de cuenta AWS: https://www.youtube.com/watch?v=CLoaGGWJT80&ab_channel=TutoVip
 
 ## Clase 02
-https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=sharing
+Grabación: https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=sharing
 
 ### **Introducción a AWS - Parte 2** Prueba de despliegue
 - Introducción a servicios de desarrollo ECR
@@ -36,7 +36,7 @@ https://drive.google.com/file/d/1MnSsTqLReLHzERF0xTzP_e_l9BdApDYu/view?usp=shari
 
 ## Clase 03
 ### **Herramientas e instadores**
-https://drive.google.com/file/d/11yZzuD8dEBhR74kk8Utyv3Dbx8NhMoV9/view
+Grabación: https://drive.google.com/file/d/11yZzuD8dEBhR74kk8Utyv3Dbx8NhMoV9/view
 
 -- [Herramientas e Instaladores](Recursos/CLASE03-herramientas-instaladores.md)
 -- [Emulador de entorno TypeScript](https://www.typescriptlang.org/play/)
@@ -89,7 +89,7 @@ https://drive.google.com/file/d/11yZzuD8dEBhR74kk8Utyv3Dbx8NhMoV9/view
 * Implementación y uso de funciones
 
 ## Clase 04
-https://drive.google.com/file/d/1dVgSwwyCyiVYTbpkU5us8XCdZbgvx2YE/view?usp=sharing
+Grabación: https://drive.google.com/file/d/1dVgSwwyCyiVYTbpkU5us8XCdZbgvx2YE/view?usp=sharing
 
 -- [Emulador de entorno TypeScript](https://www.typescriptlang.org/play/)
 -- [Código base 02](Recursos/CLASE04-TS_BASE_02.ts)
