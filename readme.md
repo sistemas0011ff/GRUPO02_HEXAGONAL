@@ -171,7 +171,7 @@ Grabaci√≥n: https://drive.google.com/file/d/1dVgSwwyCyiVYTbpkU5us8XCdZbgvx2YE/vi
 * Comunicaci√≥n entre capas en la arquitectura hexagonal
 
 ## Clase 05
-Grabaci®Æn: https://meet.google.com/vhw-tkxr-zpa
+Grabaci®Æn: https://drive.google.com/file/d/1oCXvCOHQlHwIoJH7jTlYrvvhp8tpYTPc/view?usp=sharing
 
 -- [Emulador de entorno TypeScript](https://www.typescriptlang.org/play/)
 -- [Hexagonal parte 02](Recursos/CLASE05-BASE_HEXAGONAL_P2.ts)
