@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain-Driven Design (DDD) - Guía Completa</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --text-color: #333;
+            --background-color: #f8f9fa;
+            --code-bg: #f1f1f1;
+            --border-color: #ddd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        nav {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .container {
+            padding: 2rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        
+        section:target {
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .glossary-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .glossary-term {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        pre {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #333;
+        }
+        
+        .comment {
+            color: #008000;
+        }
+        
+        .keyword {
+            color: #0000ff;
+        }
+        
+        .string {
+            color: #a31515;
+        }
+        
+        .type {
+            color: #2b91af;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        
+        .example {
+            background-color: #f8f4e5;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .analogy {
+            background-color: #e8f4f8;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--secondary-color);
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.5rem 0;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Domain-Driven Design (DDD)</h1>
+        <p>Una guía completa sobre el enfoque de diseño centrado en el dominio</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#glosario">Glosario</a></li>
+            <li><a href="#introduccion">Introducción</a></li>
+            <li><a href="#conceptos-basicos">Conceptos Básicos</a></li>
+            <li><a href="#entidades">Entidades</a></li>
+            <li><a href="#objetos-valor">Objetos de Valor</a></li>
+            <li><a href="#agregados">Agregados</a></li>
+            <li><a href="#anticorrupcion">Capa Anticorrupción</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="glosario">
+            <h2>Glosario de Conceptos DDD</h2>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Dominio</p>
+                <p>El área de conocimiento o actividad a la que se aplica el programa. Por ejemplo, en un sistema bancario, el dominio incluye conceptos como cuentas, transacciones, intereses, etc.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Lenguaje Ubicuo</p>
+                <p>Un lenguaje común compartido entre desarrolladores y expertos del dominio que elimina traducciones y malentendidos.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Modelo de Dominio</p>
+                <p>Representación que captura los conceptos esenciales del negocio y sus relaciones.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Contextos Delimitados (Bounded Contexts)</p>
+                <p>Subdivisiones del dominio en contextos más pequeños y manejables, cada uno con su propio modelo.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Entidades</p>
+                <p>Objetos que tienen una identidad única y continuidad a lo largo del tiempo, incluso cuando sus atributos cambian.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Objetos de Valor</p>
+                <p>Objetos inmutables que no tienen identidad propia y se definen por el valor de sus atributos.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Agregados</p>
+                <p>Grupos de objetos relacionados que se tratan como una unidad para cambios. La raíz del agregado es la entidad principal que controla el acceso.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Mapas de Contexto</p>
+                <p>Documentos que muestran las relaciones entre diferentes contextos delimitados. Definen cómo se comunican entre sí y qué traducciones son necesarias en estas interfaces.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Núcleo de Dominio</p>
+                <p>La parte más valiosa y diferenciadora del sistema que representa las principales ventajas competitivas. Merece la mayor inversión en diseño y calidad.</p>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Subdominios</p>
+                <p>Áreas específicas del dominio que pueden separarse conceptualmente:</p>
+                <ul>
+                    <li><strong>Genéricos:</strong> Funcionalidades comunes sin diferenciación.</li>
+                    <li><strong>Auxiliares:</strong> Apoyan el negocio pero no son críticos.</li>
+                    <li><strong>Centrales:</strong> Parte del núcleo diferenciador del negocio.</li>
+                </ul>
+            </div>
+            
+            <div class="glossary-item">
+                <p class="glossary-term">Capa Anticorrupción</p>
+                <p>Una capa que traduce entre diferentes modelos de dominio, protegiendo un modelo de la influencia de otro.</p>
+            </div>
+        </section>
+        
+        <section id="introduccion">
+            <h2>Introducción al Domain-Driven Design</h2>
+            
+            <h3>¿Qué es Domain-Driven Design?</h3>
+            <p>Domain-Driven Design es un enfoque para desarrollar software complejo que pone el dominio del negocio en el centro del diseño. En lugar de centrarnos primero en la tecnología o la arquitectura, DDD nos invita a entender profundamente el negocio para el que estamos construyendo software.</p>
+            
+            <h3>¿Qué es el "dominio"?</h3>
+            <p>El dominio es el área de conocimiento o actividad a la que se aplica el programa. Por ejemplo, en un sistema bancario, el dominio incluye conceptos como cuentas, transacciones, intereses, etc. DDD busca crear modelos de software que reflejen fielmente este dominio.</p>
+            
+            <h3>Beneficios principales</h3>
+            <ul>
+                <li>Mejor comunicación entre expertos técnicos y de negocio</li>
+                <li>Software más alineado con las necesidades reales del negocio</li>
+                <li>Mayor capacidad para evolucionar ante cambios en el negocio</li>
+                <li>Código más mantenible y expresivo</li>
+            </ul>
+            
+            <div class="analogy">
+                <h3>Analogía para entender Contextos Delimitados</h3>
+                <p>"Piensa en un hospital: el departamento de facturación ve a un paciente como un 'cliente' con facturas y pagos, mientras que el departamento médico lo ve como un 'paciente' con historial clínico y tratamientos. Cada departamento tiene su propio contexto con lenguaje y reglas diferentes."</p>
+            </div>
+        </section>
+        
+        <section id="conceptos-basicos">
+            <h2>Conceptos Básicos de DDD</h2>
+            
+            <h3>Lenguaje Ubicuo</h3>
+            <p>Primero, DDD propone crear un lenguaje común entre desarrolladores y expertos del dominio, eliminando traducciones y malentendidos.</p>
+            
+            <h3>Modelo de Dominio</h3>
+            <p>Este lenguaje se plasma en un modelo que captura los conceptos esenciales del negocio y sus relaciones.</p>
+            
+            <h3>Contextos Delimitados</h3>
+            <p>Para sistemas grandes, dividimos el dominio en contextos más pequeños y manejables, cada uno con su propio modelo.</p>
+            
+            <h3>Objetos de dominio</h3>
+            <p>Dentro de cada contexto, modelamos usando diferentes tipos de objetos según sus características:</p>
+            <ul>
+                <li>Entidades</li>
+                <li>Objetos de Valor</li>
+                <li>Agregados</li>
+            </ul>
+            
+            <h3>Mapas de Contexto</h3>
+            <p>Documentos que muestran las relaciones entre diferentes contextos delimitados. Definen cómo se comunican entre sí y qué traducciones son necesarias en estas interfaces.</p>
+            
+            <h3>Núcleo de Dominio</h3>
+            <p>La parte más valiosa y diferenciadora del sistema que representa las principales ventajas competitivas. Merece la mayor inversión en diseño y calidad.</p>
+            
+            <h3>Subdominios</h3>
+            <p>Áreas específicas del dominio que pueden separarse conceptualmente:</p>
+            <ul>
+                <li><strong>Genéricos:</strong> Funcionalidades comunes sin diferenciación.</li>
+                <li><strong>Auxiliares:</strong> Apoyan el negocio pero no son críticos.</li>
+                <li><strong>Centrales:</strong> Parte del núcleo diferenciador del negocio.</li>
+            </ul>
+        </section>
+        
+        <section id="entidades">
+            <h2>Entidades</h2>
+            
+            <h3>Concepto</h3>
+            <p>Objetos que tienen una identidad única y continuidad a lo largo del tiempo, incluso cuando sus atributos cambian.</p>
+            
+            <div class="example">
+                <h4>Ejemplo: Una cuenta bancaria sigue siendo la misma cuenta aunque cambien su saldo o su titular</h4>
+            </div>
+            
+            <h3>Implementación en Código</h3>
+            <pre><code><span class="comment">// Entidad Usuario</span>
+<span class="keyword">class</span> <span class="type">Usuario</span> {
+  <span class="comment">// El ID es lo que da identidad a la entidad</span>
+  <span class="keyword">private readonly</span> id: <span class="type">string</span>;
+  <span class="keyword">private</span> nombre: <span class="type">string</span>;
+  <span class="keyword">private</span> email: <span class="type">string</span>;
+  
+  <span class="keyword">constructor</span>(id: <span class="type">string</span>, nombre: <span class="type">string</span>, email: <span class="type">string</span>) {
+    <span class="keyword">this</span>.id = id;
+    <span class="keyword">this</span>.nombre = nombre;
+    <span class="keyword">this</span>.email = email;
+  }
+  
+  getId(): <span class="type">string</span> {
+    <span class="keyword">return this</span>.id;
+  }
+  
+  getNombre(): <span class="type">string</span> {
+    <span class="keyword">return this</span>.nombre;
+  }
+  
+  cambiarNombre(nuevoNombre: <span class="type">string</span>): <span class="type">void</span> {
+    <span class="keyword">this</span>.nombre = nuevoNombre;
+  }
+  
+  <span class="comment">// Dos usuarios son iguales si tienen el mismo ID, aunque otros atributos sean diferentes</span>
+  equals(otroUsuario: <span class="type">Usuario</span>): <span class="type">boolean</span> {
+    <span class="keyword">return this</span>.id === otroUsuario.id;
+  }
+}</code></pre>
+            
+            <h3>Características clave</h3>
+            <ul>
+                <li>Tienen un identificador único (id)</li>
+                <li>Pueden cambiar sus atributos manteniendo su identidad</li>
+                <li>Su igualdad se determina por identidad, no por valores</li>
+                <li>Suelen tener ciclo de vida</li>
+            </ul>
+        </section>
+        
+        <section id="objetos-valor">
+            <h2>Objetos de Valor</h2>
+            
+            <h3>Concepto</h3>
+            <p>Objetos inmutables que no tienen identidad propia y se definen por el valor de sus atributos.</p>
+            
+            <div class="example">
+                <h4>Ejemplo para recordar la diferencia:</h4>
+                <p><strong>Entidad:</strong> Tu cuenta bancaria. Aunque cambies el saldo o la dirección, sigue siendo TU cuenta (misma identidad).</p>
+                <p><strong>Objeto Valor:</strong> Un billete de 20€. No importa qué billete específico tengas, cualquier billete de 20€ vale lo mismo y es intercambiable por otro billete de 20€.</p>
+            </div>
+            
+            <p class="highlight">La cuestión no es que los objetos valor no sean "únicos" en memoria (cada instancia es un objeto diferente), sino que no tienen una identidad conceptual que los diferencie cuando sus valores son idénticos.</p>
+            
+            <h3>Reglas clave</h3>
+            <ul>
+                <li><strong>Sí pueden tener getters:</strong> Es perfectamente válido tener métodos que devuelvan los valores internos.</li>
+                <li><strong>No deben tener setters:</strong> No deben tener métodos que modifiquen el estado interno después de la creación.</li>
+                <li><strong>Operaciones:</strong> Pueden tener operaciones, pero éstas deben devolver nuevos objetos valor, no modificar el actual.</li>
+            </ul>
+            
+            <h3>Implementación en Código</h3>
+            <pre><code><span class="comment">// Objeto valor Dinero</span>
+<span class="keyword">class</span> <span class="type">Dinero</span> {
+  <span class="keyword">private readonly</span> cantidad: <span class="type">number</span>;
+  <span class="keyword">private readonly</span> moneda: <span class="type">string</span>;
+  
+  <span class="keyword">constructor</span>(cantidad: <span class="type">number</span>, moneda: <span class="type">string</span>) {
+    <span class="keyword">if</span> (cantidad < 0) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">"La cantidad no puede ser negativa"</span>);
+    }
+    <span class="keyword">this</span>.cantidad = cantidad;
+    <span class="keyword">this</span>.moneda = moneda;
+  }
+  
+  getCantidad(): <span class="type">number</span> {
+    <span class="keyword">return this</span>.cantidad;
+  }
+  
+  getMoneda(): <span class="type">string</span> {
+    <span class="keyword">return this</span>.moneda;
+  }
+  
+  <span class="comment">// No tiene setters - es inmutable</span>
+  
+  <span class="comment">// Operaciones que devuelven nuevos objetos</span>
+  sumar(otro: <span class="type">Dinero</span>): <span class="type">Dinero</span> {
+    <span class="keyword">if</span> (<span class="keyword">this</span>.moneda !== otro.moneda) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">"No se pueden sumar monedas diferentes"</span>);
+    }
+    <span class="keyword">return new</span> <span class="type">Dinero</span>(<span class="keyword">this</span>.cantidad + otro.cantidad, <span class="keyword">this</span>.moneda);
+  }
+  
+  multiplicar(factor: <span class="type">number</span>): <span class="type">Dinero</span> {
+    <span class="keyword">return new</span> <span class="type">Dinero</span>(<span class="keyword">this</span>.cantidad * factor, <span class="keyword">this</span>.moneda);
+  }
+  
+  <span class="comment">// Dos objetos Dinero son iguales si tienen la misma cantidad y moneda</span>
+  equals(otro: <span class="type">Dinero</span>): <span class="type">boolean</span> {
+    <span class="keyword">return this</span>.cantidad === otro.cantidad && <span class="keyword">this</span>.moneda === otro.moneda;
+  }
+}</code></pre>
+        </section>
+        
+        <section id="agregados">
+            <h2>Agregados y Raíces de Agregado</h2>
+            
+            <h3>Concepto</h3>
+            <p>Grupos de objetos relacionados que tratamos como una unidad para cambios. La raíz del agregado es la entidad principal que controla el acceso.</p>
+            
+            <div class="example">
+                <h4>Ejemplo: Un pedido (order) y sus líneas de pedido</h4>
+                <p>Un pedido contiene múltiples líneas de pedido, pero siempre accedemos a las líneas a través del pedido (raíz de agregado). No manipulamos líneas directamente.</p>
+            </div>
+            
+            <h3>Implementación en Código</h3>
+            <pre><code><span class="comment">// Parte del agregado Pedido</span>
+<span class="keyword">class</span> <span class="type">LineaPedido</span> {
+  <span class="keyword">constructor</span>(
+    <span class="keyword">private readonly</span> productoId: <span class="type">string</span>,
+    <span class="keyword">private</span> cantidad: <span class="type">number</span>,
+    <span class="keyword">private</span> precio: <span class="type">number</span>
+  ) {}
+  
+  getSubtotal(): <span class="type">number</span> {
+    <span class="keyword">return this</span>.cantidad * <span class="keyword">this</span>.precio;
+  }
+}
+
+<span class="comment">// Raíz del agregado Pedido</span>
+<span class="keyword">class</span> <span class="type">Pedido</span> {
+  <span class="keyword">private readonly</span> id: <span class="type">string</span>;
+  <span class="keyword">private readonly</span> lineas: <span class="type">LineaPedido</span>[] = [];
+  <span class="keyword">private</span> estado: <span class="type">string</span> = <span class="string">"CREADO"</span>;
+  
+  <span class="keyword">constructor</span>(id: <span class="type">string</span>) {
+    <span class="keyword">this</span>.id = id;
+  }
+  
+  <span class="comment">// La raíz controla la consistencia del agregado</span>
+  agregarLinea(productoId: <span class="type">string</span>, cantidad: <span class="type">number</span>, precio: <span class="type">number</span>): <span class="type">void</span> {
+    <span class="keyword">if</span> (<span class="keyword">this</span>.estado !== <span class="string">"CREADO"</span>) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">"No se pueden agregar productos a un pedido confirmado"</span>);
+    }
+    
+    <span class="keyword">const</span> linea = <span class="keyword">new</span> <span class="type">LineaPedido</span>(productoId, cantidad, precio);
+    <span class="keyword">this</span>.lineas.push(linea);
+  }
+  
+  confirmar(): <span class="type">void</span> {
+    <span class="keyword">if</span> (<span class="keyword">this</span>.lineas.length === 0) {
+      <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">"No se puede confirmar un pedido vacío"</span>);
+    }
+    
+    <span class="keyword">this</span>.estado = <span class="string">"CONFIRMADO"</span>;
+  }
+  
+  getTotal(): <span class="type">number</span> {
+    <span class="keyword">return this</span>.lineas.reduce((total, linea) => total + linea.getSubtotal(), 0);
+  }
+}</code></pre>
+            
+            <h3>Principios importantes</h3>
+            <ul>
+                <li>La raíz del agregado es la única entidad visible desde fuera</li>
+                <li>Solo la raíz puede ser obtenida por consultas directas</li>
+                <li>Los objetos internos solo se pueden obtener a través de la raíz</li>
+                <li>La raíz garantiza la consistencia del agregado completo</li>
+                <li>Las transacciones no deben cruzar los límites de agregados</li>
+            </ul>
+        </section>
+        
+        <section id="anticorrupcion">
+            <h2>Capa Anticorrupción</h2>
+            
+            <h3>Concepto</h3>
+            <p>Una capa que traduce entre diferentes modelos de dominio, protegiendo un modelo de la influencia de otro.</p>
+            
+            <div class="example">
+                <h4>Situación típica: Integración con sistemas legacy o externos</h4>
+                <p>Cuando necesitamos integrar nuestro sistema con uno antiguo o externo que tiene un modelo de dominio diferente, usamos una capa anticorrupción para traducir entre ambos modelos sin contaminar el nuestro.</p>
+            </div>
+            
+            <h3>Implementación en Código</h3>
+            <pre><code><span class="comment">// Modelo del sistema legacy</span>
+<span class="keyword">class</span> <span class="type">ClienteLegacy</span> {
+  id: <span class="type">number</span>;
+  nombre_completo: <span class="type">string</span>;
+  dir: <span class="type">string</span>;
+  tel: <span class="type">string</span>;
+  fecha_nac: <span class="type">string</span>;
+}
+
+<span class="comment">// Modelo de nuestro dominio actual</span>
+<span class="keyword">class</span> <span class="type">Cliente</span> {
+  <span class="keyword">constructor</span>(
+    <span class="keyword">private readonly</span> id: <span class="type">string</span>,
+    <span class="keyword">private readonly</span> nombre: <span class="type">string</span>,
+    <span class="keyword">private readonly</span> apellidos: <span class="type">string</span>,
+    <span class="keyword">private readonly</span> direccion: <span class="type">Direccion</span>,
+    <span class="keyword">private readonly</span> telefono: <span class="type">string</span>,
+    <span class="keyword">private readonly</span> fechaNacimiento: <span class="type">Date</span>
+  ) {}
+}
+
+<span class="comment">// Capa Anticorrupción</span>
+<span class="keyword">class</span> <span class="type">TraductorCliente</span> {
+  <span class="comment">// Traduce del modelo legacy a nuestro modelo</span>
+  <span class="keyword">static</span> desdeClienteLegacy(legacy: <span class="type">ClienteLegacy</span>): <span class="type">Cliente</span> {
+    <span class="comment">// Parsear dirección del formato legacy</span>
+    <span class="keyword">const</span> partesDireccion = legacy.dir.split(<span class="string">','</span>);
+    <span class="keyword">const</span> direccion = <span class="keyword">new</span> <span class="type">Direccion</span>(
+      partesDireccion[0] || <span class="string">''</span>, 
+      partesDireccion[1] || <span class="string">''</span>,
+      partesDireccion[2] || <span class="string">''</span>,
+      partesDireccion[3] || <span class="string">''</span>,
+      partesDireccion[4] || <span class="string">''</span>
+    );
+    
+    <span class="comment">// Parsear nombre completo</span>
+    <span class="keyword">const</span> partesNombre = legacy.nombre_completo.split(<span class="string">' '</span>);
+    <span class="keyword">const</span> nombre = partesNombre[0] || <span class="string">''</span>;
+    <span class="keyword">const</span> apellidos = partesNombre.slice(1).join(<span class="string">' '</span>);
+    
+    <span class="comment">// Convertir fecha</span>
+    <span class="keyword">const</span> fechaNacimiento = <span class="keyword">new</span> <span class="type">Date</span>(legacy.fecha_nac);
+    
+    <span class="keyword">return new</span> <span class="type">Cliente</span>(
+      legacy.id.toString(),
+      nombre,
+      apellidos,
+      direccion,
+      legacy.tel,
+      fechaNacimiento
+    );
+  }
+}</code></pre>
+            
+            <h3>Beneficios</h3>
+            <ul>
+                <li>Aísla y protege nuestro modelo de dominio</li>
+                <li>Facilita la migración gradual desde sistemas legacy</li>
+                <li>Separa las responsabilidades de traducción</li>
+                <li>Permite evolucionar nuestro modelo independientemente</li>
+                <li>Reduce el impacto de cambios en sistemas externos</li>
+            </ul>
+        </section>
+    </div>
+    
+    <footer>
+        

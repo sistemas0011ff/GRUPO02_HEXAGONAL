@@ -169,3 +169,73 @@ Grabaci籀n: https://drive.google.com/file/d/1dVgSwwyCyiVYTbpkU5us8XCdZbgvx2YE/vi
 * Inyecci籀n de dependencias a trav矇s del constructor
 * Manejo de solicitudes y respuestas
 * Comunicaci籀n entre capas en la arquitectura hexagonal
+
+## Clase 05
+Grabaci車n: https://meet.google.com/vhw-tkxr-zpa
+
+-- [Emulador de entorno TypeScript](https://www.typescriptlang.org/play/)
+-- [Hexagonal parte 02](Recursos/CLASE05-BASE_HEXAGONAL_P2.ts)
+-- [Bases DDD](Recursos/CLASE05-ddd-tutorial.html)
+
+
+### **Arquitectura Hexagonal - Parte 2**
+
+#### Repositorios (Puertos Secundarios)
+* Definici車n de interfaces de repositorio (`RepositorioUsuario`)
+* Implementaci車n de m谷todos como `guardar`, `listarTodos`, `existeConEmail` y `buscarPorEmail`
+* Los repositorios act迆an como puertos secundarios en la arquitectura hexagonal
+
+#### Casos de Uso (Use Case)
+* Implementaci車n de la interfaz `CasoUsoRegistrarUsuario` 
+* M谷todo `ejecutar` que recibe DTOs y trabaja con entidades del dominio
+* Comunicaci車n con repositorios para la persistencia de datos
+* Construcci車n de respuesta con trazabilidad (`Resultado<T>`)
+
+#### Patrones de Implementaci車n
+* Inyecci車n de dependencias a trav谷s del constructor
+* Mapeo entre entidades de dominio y entidades de persistencia
+* Simulaci車n de base de datos usando estructuras en memoria (Map)
+* Gesti車n de tokens de autenticaci車n (Pendiente extender la explicaci車n)
+
+#### Flujo Completo de la Arquitectura Hexagonal
+* Iniciaci車n del controlador, servicios, casos de uso y repositorios
+* Flujo de datos desde controlador ↙ servicio ↙ caso de uso ↙ repositorio
+* Transformaci車n bidireccional de datos mediante DTOs
+
+### **Domain-Driven Design (DDD)**
+
+#### Conceptos Fundamentales
+* **Dominio**: 芍rea de conocimiento o actividad a la que se aplica el programa
+* **Lenguaje Ubicuo**: Lenguaje com迆n entre desarrolladores y expertos del dominio
+* **Modelo de Dominio**: Representaci車n que captura los conceptos esenciales del negocio y sus relaciones
+
+#### Contextos Delimitados (Bounded Contexts)
+* Subdivisiones del dominio en contextos m芍s peque?os y manejables
+* Cada contexto tiene su propio modelo consistente
+* Representaci車n mediante Mapas de Contexto que muestran relaciones entre diferentes contextos
+
+#### Entidades
+* Objetos con identidad 迆nica que persiste a lo largo del tiempo
+* Caracter赤sticas: identificador 迆nico, atributos modificables, ciclo de vida
+* Implementaci車n en c車digo mediante clases con m谷todos para gestionar su estado
+
+#### Objetos de Valor
+* Objetos inmutables sin identidad propia, definidos por sus atributos
+* No tienen setters, solo m谷todos que devuelven nuevos objetos
+* 迆tiles para representar conceptos como dinero, direcciones, coordenadas
+
+#### Agregados y Ra赤ces de Agregado
+* Grupos de objetos relacionados que se tratan como una unidad
+* La ra赤z del agregado controla el acceso a los objetos internos
+* Garantizan la consistencia del conjunto completo
+* Solo la ra赤z es visible/accesible desde fuera del agregado
+
+#### Capa Anticorrupci車n
+* Traduce entre diferentes modelos de dominio
+* Protege un modelo de la influencia de otros (especialmente sistemas legacy)
+* Facilita la integraci車n manteniendo la integridad del modelo
+
+#### Aplicaci車n Pr芍ctica
+* Separaci車n clara entre dominio, aplicaci車n e infraestructura
+* Uso de interfaces para definir contratos entre capas
+* Enfoque centrado en el modelo de negocio m芍s que en la tecnolog赤a
