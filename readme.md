@@ -169,3 +169,72 @@ Grabaci贸n: https://drive.google.com/file/d/1dVgSwwyCyiVYTbpkU5us8XCdZbgvx2YE/vi
 * Inyecci贸n de dependencias a trav茅s del constructor
 * Manejo de solicitudes y respuestas
 * Comunicaci贸n entre capas en la arquitectura hexagonal
+
+## Clase 05
+Grabaci贸n: https://drive.google.com/file/d/1oCXvCOHQlHwIoJH7jTlYrvvhp8tpYTPc/view?usp=sharing
+
+-- [Emulador de entorno TypeScript](https://www.typescriptlang.org/play/)
+-- [Hexagonal parte 02](Recursos/CLASE05-BASE_HEXAGONAL_P2.ts)
+-- [Bases DDD](Recursos/CLASE05-ddd-tutorial.html)
+
+### **Arquitectura Hexagonal - Parte 2**
+
+#### Repositorios (Puertos Secundarios)
+* Definici贸n de interfaces de repositorio (`RepositorioUsuario`)
+* Implementaci贸n de m茅todos como `guardar`, `listarTodos`, `existeConEmail` y `buscarPorEmail`
+* Los repositorios act煤an como puertos secundarios en la arquitectura hexagonal
+
+#### Casos de Uso (Use Case)
+* Implementaci贸n de la interfaz `CasoUsoRegistrarUsuario` 
+* M茅todo `ejecutar` que recibe DTOs y trabaja con entidades del dominio
+* Comunicaci贸n con repositorios para la persistencia de datos
+* Construcci贸n de respuesta con trazabilidad (`Resultado<T>`)
+
+#### Patrones de Implementaci贸n
+* Inyecci贸n de dependencias a trav茅s del constructor
+* Mapeo entre entidades de dominio y entidades de persistencia
+* Simulaci贸n de base de datos usando estructuras en memoria (Map)
+* Gesti贸n de tokens de autenticaci贸n (Pendiente extender la explicaci贸n)
+
+#### Flujo Completo de la Arquitectura Hexagonal
+* Iniciaci贸n del controlador, servicios, casos de uso y repositorios
+* Flujo de datos desde controlador → servicio → caso de uso → repositorio
+* Transformaci贸n bidireccional de datos mediante DTOs
+
+### **Domain-Driven Design (DDD)**
+
+#### Conceptos Fundamentales
+* **Dominio**: 脕rea de conocimiento o actividad a la que se aplica el programa
+* **Lenguaje Ubicuo**: Lenguaje com煤n entre desarrolladores y expertos del dominio
+* **Modelo de Dominio**: Representaci贸n que captura los conceptos esenciales del negocio y sus relaciones
+
+#### Contextos Delimitados (Bounded Contexts)
+* Subdivisiones del dominio en contextos m谩s peque帽os y manejables
+* Cada contexto tiene su propio modelo consistente
+* Representaci贸n mediante Mapas de Contexto que muestran relaciones entre diferentes contextos
+
+#### Entidades
+* Objetos con identidad 煤nica que persiste a lo largo del tiempo
+* Caracter铆sticas: identificador 煤nico, atributos modificables, ciclo de vida
+* Implementaci贸n en c贸digo mediante clases con m茅todos para gestionar su estado
+
+#### Objetos de Valor
+* Objetos inmutables sin identidad propia, definidos por sus atributos
+* No tienen setters, solo m茅todos que devuelven nuevos objetos
+* 脷tiles para representar conceptos como dinero, direcciones, coordenadas
+
+#### Agregados y Ra铆ces de Agregado
+* Grupos de objetos relacionados que se tratan como una unidad
+* La ra铆z del agregado controla el acceso a los objetos internos
+* Garantizan la consistencia del conjunto completo
+* Solo la ra铆z es visible/accesible desde fuera del agregado
+
+#### Capa Anticorrupci贸n
+* Traduce entre diferentes modelos de dominio
+* Protege un modelo de la influencia de otros (especialmente sistemas legacy)
+* Facilita la integraci贸n manteniendo la integridad del modelo
+
+#### Aplicaci贸n Pr谩ctica
+* Separaci贸n clara entre dominio, aplicaci贸n e infraestructura
+* Uso de interfaces para definir contratos entre capas
+* Enfoque centrado en el modelo de negocio m谩s que en la tecnolog铆a
