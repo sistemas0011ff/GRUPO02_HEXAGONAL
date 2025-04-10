@@ -239,3 +239,62 @@ Grabacion: https://drive.google.com/file/d/1oCXvCOHQlHwIoJH7jTlYrvvhp8tpYTPc/vie
 * Separacion clara entre dominio, aplicacion e infraestructura
 * Uso de interfaces para definir contratos entre capas
 * Enfoque centrado en el modelo de negocio mas que en la tecnologia
+
+## Clase 06
+Grabacion: https://drive.google.com/file/d/1f4vHDawXfOvwNhV0F0JJI13qiOzfqzCo/view?usp=sharing  
+
+### **Domain-Driven Design Avanzado**
+
+#### Eventos de Dominio
+* Notificaciones sobre cambios en el estado del dominio
+* Permiten desacoplar componentes y mantener la consistencia
+* Implementacion de escucha y publicacion de eventos
+
+#### Servicios de Dominio
+* Logica de negocio que no pertenece naturalmente a ninguna entidad
+* Coordinacion entre diferentes agregados
+* Interfaces definidas en el dominio, implementaciones en infraestructura
+
+#### Especificaciones (Specification Pattern)
+* Encapsulacion de reglas de negocio en objetos independientes
+* Composicion de reglas complejas a partir de reglas simples
+* Reutilizacion en validaciones, consultas y reglas de negocio
+
+#### Value Objects avanzados
+* Implementacion de colecciones tipadas
+* Objetos de valor inmutables con comportamiento enriquecido
+* Garantias de invariantes y consistencia
+
+### **Aplicacion de DDD con TypeScript**
+
+#### TypeScript avanzado para DDD
+* Uso de tipos genericos para definir repositorios
+* Type guards para validaciones en tiempo de ejecucion
+* Intersection y union types para modelado de dominio
+
+#### Implementacion de Puertos y Adaptadores
+* Interfaces como puertos primarios y secundarios
+* Adaptadores para integracion con sistemas externos
+* Inversion de dependencias mediante inyeccion
+
+#### Testing en Arquitectura Hexagonal
+* Test unitarios de entidades y objetos de valor
+* Test de integracion para casos de uso
+* Mocks y stubs para simular adaptadores
+
+### **Monorepo y Proyectos Escalables**
+
+#### Estructura de proyectos escalables
+* Organizacion de carpetas por contextos delimitados
+* Separacion clara entre dominio, aplicacion e infraestructura
+* Gestion de dependencias entre modulos
+
+#### Monorepo con Lerna/Nx
+* Ventajas de monorepo vs multi-repo
+* Configuracion basica de monorepo
+* Gestion de paquetes compartidos
+
+#### CI/CD para proyectos DDD
+* Integracion continua con pruebas por capas
+* Despliegue continuo de servicios independientes
+* Estrategias para mantener la consistencia en despliegues
