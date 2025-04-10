@@ -1,4 +1,4 @@
-# ?? Arquitectura Hexagonal y Domain-Driven Design Avanzado ??
+# ðŸ”¹ Arquitectura Hexagonal y Domain-Driven Design Avanzado ðŸ”¹
 
 ## Instructores
 - **Ingeniero de Software**: Especialista en patrones de arquitectura y desarrollo de software (Eduardo F. G.)
@@ -199,7 +199,7 @@ Grabacion: https://drive.google.com/file/d/1oCXvCOHQlHwIoJH7jTlYrvvhp8tpYTPc/vie
 
 #### Flujo Completo de la Arquitectura Hexagonal
 * Iniciacion del controlador, servicios, casos de uso y repositorios
-* Flujo de datos desde controlador ¡ú servicio ¡ú caso de uso ¡ú repositorio
+* Flujo de datos desde controlador â†’ servicio â†’ caso de uso â†’ repositorio
 * Transformacion bidireccional de datos mediante DTOs
 
 ### **Domain-Driven Design (DDD)**
