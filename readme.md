@@ -1,4 +1,6 @@
-# 🔹 Arquitectura Hexagonal y Domain-Driven Design Avanzado 🔹
+
+# 🔶 Arquitectura Hexagonal y Domain-Driven Design Avanzado 🔶
+
 
 ## Instructores
 - **Ingeniero de Software**: Especialista en patrones de arquitectura y desarrollo de software (Eduardo F. G.)
