@@ -241,7 +241,8 @@ Grabacion: https://drive.google.com/file/d/1oCXvCOHQlHwIoJH7jTlYrvvhp8tpYTPc/vie
 
 ## Clase 06 - 1
 Grabacion: https://drive.google.com/file/d/1-oJu8AGUuJcKmN_aKj9SQN6Lg6BdH3qV/view?usp=sharing
--- [Base node js - typescript](Recursos/CLASE06-1.ts)
+ 
+* [Base node js - typescript](Recursos/CLASE06-1.ts)
 
 
 ### **Api básica con Express y TypeScript**
