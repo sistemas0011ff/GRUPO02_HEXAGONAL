@@ -242,7 +242,7 @@ Grabacion: https://drive.google.com/file/d/1oCXvCOHQlHwIoJH7jTlYrvvhp8tpYTPc/vie
 ## Clase 06 - 1
 Grabacion: https://drive.google.com/file/d/1-oJu8AGUuJcKmN_aKj9SQN6Lg6BdH3qV/view?usp=sharing
  
-* [Base node js - typescript](Recursos/CLASE06-1.ts)
+* [Base node js - typescript - fuentes](Recursos/CLASE06-1.ts)
 
 
 ### **Api básica con Express y TypeScript**
@@ -276,3 +276,49 @@ Grabacion: https://drive.google.com/file/d/1-oJu8AGUuJcKmN_aKj9SQN6Lg6BdH3qV/vie
 * Métodos para iniciar y detener el servidor de forma controlada
 * Implementación de Promises para operaciones asíncronas
 * Separación clara entre la lógica de Express y la gestión del servidor HTTP
+
+
+
+## Clase 06 - 2
+Grabacion: https://drive.google.com/file/d/1EM8rZRURUkmbvBpAieRVZgQuFp0nvm4W/view?usp=sharing
+
+* Fuentes del proyecto en la rama (dev-hexagonal-v1)
+* [Base node js - typescript - fuentes](Recursos/CLASE06-2.ts)
+* [Comando Base](CLASE06-2-ComandosBase.png)
+* [Fase1 y 2](Recursos/CLASE06-2-Fase1-Fase2.png)
+* [Hexagonal - Flujo base1 ](Recursos/CLASE06-2-Hexagonal-Flujo1.png)
+
+### **Proyecto de Arquitectura Hexagonal en Node.js/TypeScript**
+
+#### Configuración Inicial
+* Creación de estructura base del proyecto con npm y TypeScript
+* Configuración del tsconfig.json con opciones optimizadas para Node.js
+* Instalación de dependencias: express y tipos para TypeScript
+
+#### Conceptos Fundamentales
+* Diferencias entre exportaciones por defecto y nombradas en JavaScript/TypeScript
+* Comparación entre módulos HTTP nativos de Node.js y Express
+* IncomingMessage/ServerResponse vs Request/Response de Express
+
+#### Estructura del Proyecto
+* Implementación de arquitectura modular
+* Clases principales:
+
+** App: Clase principal que gestiona el inicio/parada de la aplicación
+** Server: Maneja la configuración del servidor HTTP y Express
+** Routes: Sistema de registro de rutas con Express Router
+
+#### Gestión de Peticiones HTTP
+* Implementación de rutas con Express Router para mayor modularidad
+* Manejo de diferentes métodos HTTP (GET, POST)
+* Estructuras de datos con interfaces TypeScript (Usuario, NuevoUsuario)
+
+#### Gestión del Ciclo de Vida
+* Manejo de señales del sistema (SIGTERM, SIGINT)
+* Procedimientos de inicio y cierre controlado del servidor
+* Sistema de bootstrap para inicialización ordenada
+
+#### Ejemplo de Endpoints
+* Endpoint de health check para monitoreo
+
+
