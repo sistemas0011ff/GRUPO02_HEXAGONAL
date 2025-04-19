@@ -236,3 +236,42 @@ Grabacion: https://drive.google.com/file/d/1oCXvCOHQlHwIoJH7jTlYrvvhp8tpYTPc/vie
 * Traduce entre diferentes modelos de dominio
 * Protege un modelo de la influencia de otros (especialmente sistemas legacy)
 * Facilita la integracion manteniendo la integridad del modelo
+
+
+
+## Clase 06 - 1
+Grabacion: https://drive.google.com/file/d/1-oJu8AGUuJcKmN_aKj9SQN6Lg6BdH3qV/view?usp=sharing
+-- [Base node js - typescript](Recursos/CLASE06-1.ts)
+
+
+### **Api básica con Express y TypeScript**
+
+#### Express y TypeScript
+* Creación de un servidor básico con Express
+* Configuración de rutas GET y POST para usuarios
+* Middleware para parsear JSON y manejar rutas no encontradas
+* Uso de req.body para obtener datos de solicitudes
+
+#### Migración a TypeScript
+* Cambio de sintaxis: require por import
+* Definición de interfaces (Usuario, NuevoUsuarioRequest)
+* Adición de tipos a parámetros de funciones (Request, Response)
+* Instrucciones para instalar TypeScript y definiciones de tipos
+
+#### Desacoplamiento del servidor HTTP
+* Separación del servidor HTTP de Express
+* Uso directo de módulos http y url de Node.js
+* Implementación de un requestListener personalizado
+* Manejo mixto: algunas rutas con Express y otras con HTTP nativo
+
+#### Organización de rutas
+* Uso de express.Router() para agrupar rutas relacionadas
+* Organización mediante prefijos de rutas (/api)
+* Implementación de manejo de señales (SIGTERM) para cierre controlado
+* Simulación de señales SIGTERM para pruebas
+
+#### Clase Server encapsulada
+* Creación de una clase Server para encapsular la lógica del servidor
+* Métodos para iniciar y detener el servidor de forma controlada
+* Implementación de Promises para operaciones asíncronas
+* Separación clara entre la lógica de Express y la gestión del servidor HTTP
