@@ -1,0 +1,66 @@
+{
+
+	  "compilerOptions": {
+
+		// Especifica la versión de JavaScript a la que se compilará el código (ES2016 tiene buen soporte en Node.js)
+
+		"target": "es2016",
+
+
+		// Define el sistema de módulos para el código generado (CommonJS es el estándar en Node.js)
+
+		"module": "commonjs",
+
+
+		// Carpeta donde se guardarán los archivos JS compilados
+
+		"outDir": "./dist",
+
+
+		// Carpeta donde están los archivos fuente de TypeScript
+
+		//"rootDir": "./src",
+
+		"rootDir": "./",
+
+
+		// Activa todas las comprobaciones estrictas de tipo (null, undefined, any implícito, etc.)
+
+		// o permitirá usar variables que puedan ser null o undefined sin comprobaciones explícitas.
+
+		// se usa para proyectos grandes
+
+		"strict": true,
+
+
+		// Facilita la importación de módulos CommonJS en código ES modules (import en lugar de require)
+
+		"esModuleInterop": true,
+
+
+		// Omite la verificación de tipos en archivos de declaración (.d.ts) para mejorar el rendimiento
+
+		"skipLibCheck": true,
+
+
+		// Garantiza consistencia en mayúsculas/minúsculas en las importaciones (importante en sistemas Unix)
+
+		"forceConsistentCasingInFileNames": true
+
+	  },
+
+	  
+
+	  // Patrones de archivos que se incluirán en la compilación (todos los archivos dentro de src)
+
+	  // "include": ["src/**/*"],
+
+	  "include": ["src/**/*"],
+
+
+
+	  // Patrones de archivos que se excluirán (node_modules contiene código de terceros ya compilado)
+
+	  "exclude": ["node_modules"]
+
+	 }
