@@ -322,3 +322,168 @@ Grabacion: https://drive.google.com/file/d/1EM8rZRURUkmbvBpAieRVZgQuFp0nvm4W/vie
 * Endpoint de health check para monitoreo
 
 
+
+## Clase 07
+Grabacion: https://drive.google.com/file/d/1y6ayl76f1UJHh948OhX94C-ExGuWfMyV/view?usp=sharing
+
+* Fuentes del proyecto en la rama (dev-hexagonal-v2)
+* [Puntos a tratados en clase](CLASE07-1.png)
+* [Casos de Uso](CLASE07-2.png)
+* [MVC vs Hexagonal](CLASE07-3.png)
+* [Flujo de dependencias](CLASE07-4.png)
+
+
+### **1. Instalaci贸n Awilix**
+
+La instalación de Awilix se realiza mediante el gestor de paquetes npm:
+
+```bash
+# Instalar Awilix para la inyección de dependencias
+npm install awilix --save
+```
+
+### **Modos de trabajo:**
+Awilix ofrece diferentes modos para registrar clases en el contenedor:
+
+- **Clasic** = mensajeService: asClass(NombreClase).singleton() -- OK
+  - Este es el modo recomendado y estándar
+  - Registra una clase en el contenedor como singleton
+  - Ejemplo: `container.register('healthController', asClass(HealthController).singleton())`
+
+- **Proxy** = xxxxxxx: asClass(NombreClase).singleton()
+  - Modo alternativo que utiliza proxies para la inyecci贸n
+  - Configurado en el proyecto con `injectionMode: InjectionMode.PROXY`
+  - Ejemplo en la implementación:
+  
+```typescript
+// app/di/index.ts
+import { asClass, createContainer, InjectionMode } from "awilix";
+import { AuthController } from "../controllers/auth.controller";
+import { HealthController } from "../controllers/health.controller";
+
+const container = createContainer({
+  injectionMode: InjectionMode.PROXY
+});
+
+container.register({
+  //Convención: identificador: [Controller]
+  healthController: asClass(HealthController).singleton(),
+  authController: asClass(AuthController).singleton(),
+});
+
+export { container };
+```
+
+### **2. Creacion de controller's**
+
+Los controladores en arquitectura hexagonal actúan como adaptadores primarios:
+
+```typescript
+// app/controllers/health.controller.ts
+import { Request, Response } from 'express';
+import status from 'http-status';
+
+export class HealthController {
+    constructor() {}
+
+    run(req: Request, res: Response): void {
+        const health = {
+            status: "ok",
+            name: "hexagonal",
+            version: "0.0.1",
+            eviroment: "Prouccion"
+        };
+
+        res.status(status.OK).send(health);
+    }
+}
+
+// app/controllers/auth.controller.ts
+import { Request, Response } from 'express';
+import status from 'http-status';
+
+export class AuthController {
+    run(req: Request, res: Response): void {
+        res.status(status.OK).send({
+            message: "Autenticación exitosa",
+            token: "Token-213243242",
+            expireIn: 3600
+        });
+    }
+}
+```
+
+### **3. Registro dinámico de Rutas**
+
+El registro dinámico de rutas permite una mayor flexibilidad:
+
+```typescript
+// app/routes/index.ts
+import { Router } from "express";
+import * as fs from 'fs';
+import * as path from 'path';
+
+export function registerRoutes(router: Router): void {
+    const routerFiles = fs.readdirSync(__dirname)
+        .filter(file => file.endsWith('.route.ts') || file.endsWith('.route.js'))
+        .filter(file => file !== 'index.ts' && 'index.js');
+
+    //Registrando cada una de las rutas
+    for(const file of routerFiles) {
+        //importar el archivo de ruta correspondiente
+        const routerPath = path.join(__dirname, file);
+        const route = require(routerPath);
+        route.register(router);
+    }
+}
+```
+
+```typescript
+// app/routes/auth.route.ts
+import { Router } from 'express';
+import { container } from '../di/index';
+
+export const register = (router: Router): void => {
+    const controller = container.resolve("authController");
+    router.post("/auth", (req, res) => controller.run(req, res));
+}
+```
+
+```typescript
+// app/routes/health.route.ts
+import { Router } from 'express';
+import { container } from '../di/index';
+
+export const register = (router: Router): void => {
+    const controller = container.resolve("healthController");
+    router.get("/health", (req, res) => controller.run(req, res));
+}
+```
+
+### **4. Inyecci贸n de dependencias**
+
+La estructura de la fábrica de rutas aprovecha Awilix para crear el router con el contenedor:
+
+```typescript
+// app/routes/router.ts
+import { AwilixContainer } from "awilix";
+import { Router } from "express";
+
+export class RouterFactory {
+    static create(basePath: string, container?: AwilixContainer): Router {
+        const router = Router();
+        const routesModules = require('./index');
+        if(typeof routesModules.registerRoutes === "function") {
+            routesModules.registerRoutes(router);
+        }
+        return router;
+    }
+}
+```
+
+Esta implementación permite:
+
+- Registrar controladores en el contenedor de Awilix de forma centralizada
+- Inyectar dependencias automáticamente donde se necesiten
+- Cargar dinámicamente todas las rutas definidas en archivos específicos
+- Mantener una estructura modular y extensible
