@@ -1,0 +1,11 @@
+import { Router } from "express";
+import {register as registerHealth}  from './health.route'
+import {register as registerAuth}  from './auth.route'
+
+export function registerRoutes(router :Router): void {
+    // register(router);
+    // register(router);
+    registerHealth(router);
+    registerAuth(router);
+
+}

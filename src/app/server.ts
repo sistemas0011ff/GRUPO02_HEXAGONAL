@@ -1,7 +1,9 @@
 import express, {Router} from 'express';
 import http from 'http'
 import { resolve } from 'path';
-import { registerRoutes } from './routes';
+import { container } from './di/index';
+// import { registerRoutes } from './routes/indexts';
+import { RouterFactory } from './routes/router';
 
 export class Server {
     private express: express.Express;
@@ -26,9 +28,11 @@ export class Server {
         this.express.use(express.json())
         
         //Rutas... de nuestros distintos endpoint
-        const router = Router();
+        const router = RouterFactory.create(this.basePath, container);
+        // const router = Router();
         this.express.use(this.basePath, router);
-        registerRoutes(router);
+        // registerRoutes(router);
+        
     }
 
     //Iniciar servidor http
