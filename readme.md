@@ -487,3 +487,235 @@ Esta implementación permite:
 - Inyectar dependencias automáticamente donde se necesiten
 - Cargar dinámicamente todas las rutas definidas en archivos específicos
 - Mantener una estructura modular y extensible
+
+
+## Clase 08
+Grabacion: https://drive.google.com/file/d/1aFPniCU3n3Q5YghsQM7mTose_eUvBUpc/view?usp=sharing
+
+
+* [Fuentes del proyecto en la rama] (dev-hexagonal-v3)
+* [Contexto de clase de estudio - 1](CLASE08-1-Contexto1.png)
+
+### **Temas tratados en clase**
+
+En la clase 8 se trataron los siguientes temas:
+- Estructura de carpetas para arquitectura hexagonal
+- Creación de clase servicio
+- Creación de clases casos de uso
+- Creación de interfaces
+- Inyección de dependencias con Awilix
+- Contexto para caso de estudio parte 1
+
+### **1. Estructura de Carpetas para Arquitectura Hexagonal**
+
+La estructura de carpetas para arquitectura hexagonal organiza el código en capas bien definidas:
+
+```
+src/
+├── app/                                  # Capa de Aplicación
+│   ├── controllers/                      # Controladores HTTP
+│   │   ├── auth.controller.ts
+│   │   └── health.controller.ts
+│   ├── di/                              # Inyección de dependencias
+│   │   └── index.ts
+│   ├── routes/                          # Definición de rutas
+│   │   ├── auth.route.ts
+│   │   ├── health.route.ts
+│   │   ├── index.ts
+│   │   └── index.txt
+│   ├── router.ts
+│   ├── app.ts
+│   ├── server.ts
+│   └── start.ts
+├── context/                             # Contextos de dominio
+│   └── auth/
+│       ├── application/                 # Capa de aplicación
+│       │   ├── dto/
+│       │   ├── interface/
+│       │   │   ├── auth-application.service.interface.ts
+│       │   │   └── login.use-case.interface.ts
+│       │   ├── services/
+│       │   │   └── auth-application.service.ts
+│       │   └── use-cases/
+│       │       ├── login.use-case.ts
+│       │       └── validate-password-format.use-case.ts
+│       ├── domain/                      # Capa de dominio
+│       │   ├── entity/
+│       │   ├── repositories/
+│       │   │   └── user.repository.interface.ts
+│       │   └── value-objects/
+│       └── infrastructure/              # Capa de infraestructura
+│           ├── entity-persistence/
+│           └── repositories/
+├── cart/
+├── shared/
+└── OUTLINE
+```
+
+### **2. Creación de Clase Servicio**
+
+Los servicios de aplicación orquestan los casos de uso y aplican la lógica de negocio:
+
+```typescript
+// context/auth/application/services/auth-application.service.ts
+import { LoginRequestDto } from "../dto/login-request.dto";
+import { LoginResponsetDto } from "../dto/login-response.dto";
+import { IAuthApplicationService } from "../interface/auth-application.service.interface";
+import { ILoginUseCase } from "../interface/login.use-case.interface";
+import { ValidatePasswordFromatUseCase } from "../use-cases/validate-password-format.use-case";
+
+export class AuthApplicationService implements IAuthApplicationService {
+
+    constructor(
+        private loginUseCase: ILoginUseCase,
+        private validatePasswordFromatUseCase: ValidatePasswordFromatUseCase
+    ){}
+
+    async login(request: LoginRequestDto): Promise<LoginResponsetDto> {
+        
+        const  isValidFormat = await this.validatePasswordFormat(request.password);
+        
+        if (!isValidFormat){
+            throw new Error("El formato de la contraseña no es válido");
+        }
+
+        const result = await this.loginUseCase.execute(request.email, request.password);
+
+        return {
+            token: result.token,
+            expireIn: result.expiresIn,
+            userId: result.userId
+        }
+    }
+    
+    async validatePasswordFormat(password: string): Promise<boolean> {
+        return this.validatePasswordFromatUseCase.excute(password);
+    }
+}
+```
+
+### **3. Creación de Clases Casos de Uso**
+
+Los casos de uso implementan la lógica de negocio específica:
+
+```typescript
+// context/auth/application/use-cases/login.use-case.ts
+import { LoginResultDto } from "../dto/login-result.dto";
+import { ILoginUseCase } from "../interface/login.use-case.interface";
+
+export class LoginUseCase implements ILoginUseCase {
+
+    async execute(email: string, password: string): Promise<LoginResultDto> {
+        console.log("Ingresé al caso de uso: LoginUseCase");
+        throw new Error("Method not implemented.");
+    }
+}
+
+// context/auth/application/use-cases/validate-password-format.use-case.ts
+export class ValidatePasswordFromatUseCase {
+    // Reglas de validación del password
+    // Mínimo 8 caracteres
+    // Al menos una letra mayúscula
+    // Al menos una letra minúscula
+    // Al menos un número
+    // Al menos un caracter especial
+
+    excute(password: string):boolean {
+        console.log("se ingreso a la validacion de password");
+        if (password.length < 8) {
+            return false;
+        }
+
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLoweCase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecialChar = /[!@#${}]/.test(password);
+
+        return hasUpperCase && hasLoweCase && hasNumber && hasSpecialChar;
+    }
+}
+```
+
+### **4. Creación de Interfaces**
+
+Las interfaces definen contratos entre capas:
+
+```typescript
+// context/auth/domain/repositories/user.repository.interface.ts
+export interface IUserRepository {
+    // Interface para el repositorio de usuarios
+}
+
+// context/auth/application/interface/auth-application.service.interface.ts
+export interface IAuthApplicationService {
+    login(request: LoginRequestDto): Promise<LoginResponsetDto>;
+    validatePasswordFormat(password: string): Promise<boolean>;
+}
+
+// context/auth/application/interface/login.use-case.interface.ts
+export interface ILoginUseCase {
+    execute(email: string, password: string): Promise<LoginResultDto>;
+}
+```
+
+### **5. Inyección de Dependencias con Awilix**
+
+El controlador utiliza inyección de dependencias para recibir el servicio:
+
+```typescript
+// app/controllers/auth.controller.ts
+import { Request, Response } from 'express';
+import status from 'http-status';
+import { IAuthApplicationService } from '../../context/auth/application/interface/auth-application.service.interface';
+
+export class AuthController {
+    constructor(private authApplicationService: IAuthApplicationService) {}
+    
+    async run(req: Request, res: Response): Promise<void> {        
+        const result = await this.authApplicationService.login(req.body);
+        
+        res.status(status.OK).send({
+            message: "Autenticación exitosa",
+            token: result.token,
+            expireIn: result.expireIn,
+            userId: result.userId
+        });
+    }
+}
+
+// app/routes/auth.route.ts
+import { Router } from 'express';
+import { container } from '../di/index';
+
+export const register = (router: Router): void => {
+    const controller = container.resolve("authController");
+    router.post("/auth", (req, res) => controller.run(req, res));
+}
+```
+
+### **6. Contexto para Caso de Estudio - Parte 1**
+
+**Sistema de Autenticación**
+
+La implementación mostrada corresponde al contexto de autenticación, que incluye:
+
+1. **Casos de uso**:
+   - Login de usuarios
+   - Validación de formato de contraseña
+
+2. **Servicios de aplicación**:
+   - AuthApplicationService que orquesta los casos de uso
+
+3. **Reglas de negocio**:
+   - Contraseña debe tener mínimo 8 caracteres
+   - Al menos una letra mayúscula
+   - Al menos una letra minúscula
+   - Al menos un número
+   - Al menos un caracter especial
+
+4. **Interfaces**:
+   - IAuthApplicationService
+   - ILoginUseCase
+   - IUserRepository
+
+Esta estructura sigue los principios SOLID, específicamente el Principio de Sustitución de Liskov, permitiendo que las implementaciones concretas puedan ser sustituidas por otras que implementen las mismas interfaces.
