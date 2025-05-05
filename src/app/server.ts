@@ -49,7 +49,7 @@ export class Server {
             });    
 
             this.httpServer.listen(this.port, () => {
-                console.log(`Servidor ${this.appName} esta ejecutandose en http://localhost:${this.port}:${this.basePath}`)
+                console.log(`Servidor ${this.appName} esta ejecutandose en http://localhost:${this.port}${this.basePath}`)
                 resolve();
             })            
         });
