@@ -719,3 +719,19 @@ La implementación mostrada corresponde al contexto de autenticación, que inclu
    - IUserRepository
 
 Esta estructura sigue los principios SOLID, específicamente el Principio de Sustitución de Liskov, permitiendo que las implementaciones concretas puedan ser sustituidas por otras que implementen las mismas interfaces.
+
+
+## Clase 09
+Grabacion: https://drive.google.com/file/d/1Pl4xovimoZpZh9GsrXyOuoVMHNe2mxLR/view?usp=sharing
+
+
+* [Fuentes del proyecto en la rama] (dev-hexagonal-v4)
+* [Componentes de la Arquitectura hexagonal](CLASE9-1.png)
+
+### **Temas tratados en clase**
+
+En la clase 9 se trataron los siguientes temas:
+- A. Hexgaonal - sus componentes
+- Capas cuando se une con DDD
+- Implementacion del Repo. 
+- Empaquetado profesional - Concepto
