@@ -17,14 +17,25 @@ export class AuthController {
     */
 
     async run(req: Request, res: Response): Promise<void> {        
-        const result = await this.authApplicationService.login(req.body);
         
-        res.status(status.OK).send({
-            message:"Autenticación exitosa",
-            token: result.token,
-            expireIn: result.expireIn,
-            userId: result.userId
-        });
+
+        try {
+            
+            const result = await this.authApplicationService.login(req.body);
+        
+            res.status(status.OK).send({
+                message:"Autenticación exitosa",
+                token: result.token,
+                expireIn: result.expireIn,
+                userId: result.userId
+            });
+
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Error en la autenticación";
+            res.status(status.UNAUTHORIZED).send({
+                message: errorMessage 
+            });
+        }
     }
 
 }

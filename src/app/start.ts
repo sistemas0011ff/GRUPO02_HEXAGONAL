@@ -7,7 +7,7 @@ async function bootstrap() {
         const app = new App();
         const appName = 'mi-api';
         const basePath = '/api';
-        const port = process.env.PORT || '3001';
+        const port = process.env.PORT || '3012';
         const enviroment = process.env.NODE_ENV || "development";
 
         await app.start(appName, basePath, port, enviroment);
