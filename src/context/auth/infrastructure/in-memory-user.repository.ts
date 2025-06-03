@@ -10,15 +10,35 @@ export class InMemoryUserRepository implements IUserRepository{
     }
 
     private seedData(){
-        const testUser : User = {
+        const testUser : User[] = [
+            {
             id: "1",
             email: "efajardo@email.com",
             password: "Inicios2022$$",
             name: "efajardo",
             createdAt: new Date()
-        };
+           },
+           {
+            id: "2",
+            email: "juan@email.com",
+            password: "Inicios2022$$",
+            name: "juan",
+            createdAt: new Date()
+           },
+           {
+            id: "2",
+            email: "pepe@email.com",
+            password: "Inicios2022$$",
+            name: "pepe",
+            createdAt: new Date()
+           }
+        ];
 
-        this.users.set(testUser.id, testUser);
+        testUser.forEach(element => {
+           this.users.set(element.id, element); 
+        })
+
+        // this.users.set(testUser.id, testUser);
     }
 
 
@@ -55,4 +75,7 @@ export class InMemoryUserRepository implements IUserRepository{
         }
     }
    
+    async findAll(): Promise<User[]> {
+      return  Array.from(this.users.values());
+    }
 }
