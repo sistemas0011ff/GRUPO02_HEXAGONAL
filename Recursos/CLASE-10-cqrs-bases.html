@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CQRS - Guía Completa de Implementación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.8;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 100%);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #888;
+        }
+        
+        /* Flujo Diagram */
+        .flow-section {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        
+        .flow-title {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 2rem;
+        }
+        
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .flow-step {
+            background: linear-gradient(135deg, #1e1e1e, #2d2d2d);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: 2px solid #667eea;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .arrow {
+            color: #667eea;
+            font-size: 2rem;
+            margin: 0 0.5rem;
+        }
+        
+        /* Folder Structure */
+        .folder-structure {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .folder-title {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .folder {
+            margin-left: 20px;
+            color: #ffd700;
+            line-height: 1.8;
+        }
+        
+        .file {
+            color: #87ceeb;
+        }
+        
+        /* Interface Cards */
+        .interfaces-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .interface-card {
+            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+            border: 2px solid #444;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .interface-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .interface-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        
+        .interface-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .file-path {
+            background: #333;
+            color: #888;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .code-block {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .code-block pre {
+            color: #e0e0e0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .keyword {
+            color: #ff79c6;
+            font-weight: bold;
+        }
+        
+        .type {
+            color: #8be9fd;
+        }
+        
+        .string {
+            color: #f1fa8c;
+        }
+        
+        .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+        
+        .highlight {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #8be9fd;
+        }
+        
+        /* Info Boxes */
+        .purpose-box {
+            background: linear-gradient(135deg, #1e3a1e 0%, #2d4a2d 100%);
+            border-left: 4px solid #50fa7b;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .purpose-box h4 {
+            color: #50fa7b;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .usage-box {
+            background: linear-gradient(135deg, #1e1e3a 0%, #2d2d4a 100%);
+            border-left: 4px solid #bd93f9;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .usage-box h4 {
+            color: #bd93f9;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .example-box {
+            background: linear-gradient(135deg, #3a2a1e 0%, #4a3a2d 100%);
+            border-left: 4px solid #ffb86c;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .example-box h4 {
+            color: #ffb86c;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        /* Analysis Section */
+        .analysis-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            border: 2px solid #667eea;
+        }
+        
+        .analysis-title {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .line-by-line {
+            margin: 2rem 0;
+        }
+        
+        .line-explanation {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        
+        .line-code {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            color: #e0e0e0;
+            padding: 1rem;
+            background: #0a0a0a;
+            border-radius: 8px;
+            border: 1px solid #444;
+            display: flex;
+            align-items: center;
+        }
+        
+        .line-meaning h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Generics Diagram */
+        .generics-section {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .generic-box {
+            display: inline-block;
+            background: #1e1e1e;
+            border: 2px solid #667eea;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+        
+        .generic-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Summary */
+        .summary-section {
+            background: linear-gradient(135deg, #2d1b69 0%, #1a1a1a 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            border: 2px solid #667eea;
+            text-align: center;
+        }
+        
+        .summary-title {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 2rem;
+        }
+        
+        .summary-list {
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            line-height: 2.5;
+        }
+        
+        .key-point {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid #667eea;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .key-point h3 {
+            color: #50fa7b;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .flow-container {
+                flex-direction: column;
+            }
+            
+            .arrow {
+                transform: rotate(90deg);
+            }
+            
+            .line-explanation {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .interface-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>CQRS - Implementación Paso a Paso</h1>
+            <p class="subtitle">Guía completa para implementar Command Query Responsibility Segregation</p>
+        </div>
+
+        <!-- Flow Diagram -->
+        <div class="flow-section">
+            <h2 class="flow-title">Flujo Completo de CQRS</h2>
+            <div class="flow-container">
+                <div class="flow-step">Cliente</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Controller</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Service</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">CommandBus</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Handler</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">Repository</div>
+                <span class="arrow">→</span>
+                <div class="flow-step">DB</div>
+            </div>
+        </div>
+
+        <!-- Folder Structure -->
+        <div class="folder-structure">
+            <h3 class="folder-title">📁 Estructura de Carpetas CQRS</h3>
+            <div>📂 cqrs/</div>
+            <div class="folder">📄 <span class="file">ICommand.ts</span></div>
+            <div class="folder">📄 <span class="file">ICommandHandler.ts</span></div>
+            <div class="folder">📄 <span class="file">ICommandResult.ts</span></div>
+            <div class="folder">📄 <span class="file">IQuery.ts</span></div>
+            <div class="folder">📄 <span class="file">IQueryHandler.ts</span></div>
+            <div class="folder">📄 <span class="file">IQueryResult.ts</span></div>
+            <div class="folder">📄 <span class="file">ICommandBus.ts</span></div>
+            <div class="folder">📄 <span class="file">IQueryBus.ts</span></div>
+        </div>
+
+        <!-- Interfaces Section -->
+        <div class="interfaces-section">
+            <h2 class="section-title">📝 Interfaces de CQRS</h2>
+
+            <!-- ICommand -->
+            <div class="interface-card">
+                <div class="interface-name">ICommand</div>
+                <div class="file-path">cqrs/ICommand.ts</div>
+                
+                <div class="code-block">
+                    <pre><span class="keyword">export interface</span> <span class="type">ICommand</span> {
+    <span class="comment">// Método que valida el comando antes de ejecutarse</span>
+    <span class="highlight">validate</span>(): <span class="type">Promise</span>&lt;<span class="type">void</span>&gt; | <span class="type">void</span>;
+}</pre>
+                </div>
+                
+                <div class="purpose-box">
+                    <h4>🎯 ¿Para qué sirve?</h4>
+                    <p>Define que TODOS los comandos deben poder validarse. Esto asegura que no proceses datos inválidos.</p>
+                </div>
+                
+                <div class="usage-box">
+                    <h4>📍 ¿Dónde se usa?</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>En todos los comandos de escritura (CreateUser, UpdateUser, DeleteUser)</li>
+                        <li>El CommandBus llama a validate() antes de ejecutar el handler</li>
+                    </ul>
+                </div>
+                
+                <div class="example-box">
+                    <h4>💡 Ejemplo de implementación</h4>
+                    <div class="code-block">
+                        <pre><span class="keyword">export class</span> <span class="type">CreateUserCommand</span> <span class="keyword">implements</span> <span class="type">ICommand</span> {
+    <span class="keyword">constructor</span>(
+        <span class="keyword">public readonly</span> email: <span class="type">string</span>,
+        <span class="keyword">public readonly</span> password: <span class="type">string</span>
+    ) {}
+
+    <span class="highlight">validate</span>(): <span class="type">void</span> {
+        <span class="keyword">if</span> (!<span class="keyword">this</span>.email.includes(<span class="string">'@'</span>)) {
+            <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">'Email inválido'</span>);
+        }
+        <span class="keyword">if</span> (<span class="keyword">this</span>.password.length &lt; 6) {
+            <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">'Password muy corto'</span>);
+        }
+    }
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ICommandResult -->
+            <div class="interface-card">
+                <div class="interface-name">ICommandResult</div>
+                <div class="file-path">cqrs/ICommandResult.ts</div>
+                
+                <div class="code-block">
+                    <pre><span class="keyword">export interface</span> <span class="type">ICommandResult</span> {
+    <span class="highlight">success</span>: <span class="type">boolean</span>;
+    message?: <span class="type">string</span>;
+}</pre>
+                </div>
+                
+                <div class="purpose-box">
+                    <h4>🎯 ¿Para qué sirve?</h4>
+                    <p>Estandariza TODAS las respuestas de los comandos. Siempre sabrás si fue exitoso o falló.</p>
+                </div>
+                
+                <div class="usage-box">
+                    <h4>📍 ¿Dónde se usa?</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Como tipo de retorno en TODOS los command handlers</li>
+                        <li>Puedes extenderlo para agregar más campos específicos</li>
+                    </ul>
+                </div>
+                
+                <div class="example-box">
+                    <h4>💡 Ejemplo de extensión</h4>
+                    <div class="code-block">
+                        <pre><span class="comment">// Extiendes ICommandResult para agregar campos específicos</span>
+<span class="keyword">export interface</span> <span class="type">CreateUserResult</span> <span class="keyword">extends</span> <span class="type">ICommandResult</span> {
+    userId?: <span class="type">string</span>;  <span class="comment">// Campo adicional</span>
+}
+
+<span class="comment">// Uso en el handler</span>
+<span class="keyword">return</span> {
+    <span class="highlight">success</span>: <span class="keyword">true</span>,
+    message: <span class="string">'Usuario creado exitosamente'</span>,
+    userId: <span class="string">'123-456-789'</span>
+};</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ICommandHandler -->
+            <div class="interface-card">
+                <div class="interface-name">ICommandHandler</div>
+                <div class="file-path">cqrs/ICommandHandler.ts</div>
+                
+                <div class="code-block">
+                    <pre><span class="keyword">import</span> { <span class="type">ICommand</span> } <span class="keyword">from</span> <span class="string">"./ICommand"</span>;
+<span class="keyword">import</span> { <span class="type">ICommandResult</span> } <span class="keyword">from</span> <span class="string">"./ICommandResult"</span>;
+
+<span class="keyword">export interface</span> <span class="type">ICommandHandler</span>&lt;
+    <span class="type">TCommand</span> <span class="keyword">extends</span> <span class="type">ICommand</span>,
+    <span class="type">TResult</span> <span class="keyword">extends</span> <span class="type">ICommandResult</span>
+&gt; {
+    <span class="highlight">handle</span>(command: <span class="type">TCommand</span>): <span class="type">Promise</span>&lt;<span class="type">TResult</span>&gt;;
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Section -->
+        <div class="analysis-section">
+            <h2 class="analysis-title">🔍 Análisis Línea por Línea</h2>
+            
+            <div class="line-by-line">
+                <div class="line-explanation">
+                    <div class="line-code">
+                        <code>import { ICommand } from "./ICommand";</code>
+                    </div>
+                    <div class="line-meaning">
+                        <h4>¿Por qué importamos ICommand?</h4>
+                        <p>Necesitamos ICommand porque TODOS los comandos que este handler maneje DEBEN implementar ICommand. Esto garantiza que todos los comandos tengan el método validate().</p>
+                    </div>
+                </div>
+
+                <div class="line-explanation">
+                    <div class="line-code">
+                        <code>import { ICommandResult } from "./ICommandResult";</code>
+                    </div>
+                    <div class="line-meaning">
+                        <h4>¿Por qué importamos ICommandResult?</h4>
+                        <p>Todos los handlers DEBEN retornar un resultado que implemente ICommandResult. Esto asegura que siempre tengamos success: boolean y opcionalmente un message.</p>
+                    </div>
+                </div>
+
+                <div class="line-explanation">
+                    <div class="line-code">
+                        <code>export interface ICommandHandler&lt;</code>
+                    </div>
+                    <div class="line-meaning">
+                        <h4>¿Por qué es una interface y no una clase?</h4>
+                        <p>Una interface define un CONTRATO sin implementación. Esto permite que diferentes handlers implementen la lógica de manera diferente, pero todos DEBEN tener un método handle().</p>
+                    </div>
+                </div>
+
+                <div class="line-explanation">
+                    <div class="line-code">
+                        <code>TCommand extends ICommand,</code>
+                    </div>
+                    <div class="line-meaning">
+                        <h4>¿Qué significa este genérico?</h4>
+                        <p>TCommand es un tipo genérico que DEBE extender de ICommand. Esto significa que cuando implementes el handler, puedes especificar EXACTAMENTE qué tipo de comando maneja (CreateUserCommand, UpdateUserCommand, etc.)</p>
+                    </div>
+                </div>
+
+                <div class="line-explanation">
+                    <div class="line-code">
+                        <code>TResult extends ICommandResult</code>
+                    </div>
+                    <div class="line-meaning">
+                        <h4>¿Por qué otro genérico?</h4>
+                        <p>TResult permite que cada handler retorne un resultado específico. Por ejemplo, CreateUserHandler puede retornar CreateUserResult que incluye el userId además de success/message.</p>
+                    </div>
+                </div>
+
+                <div class="line-explanation">
+                    <div class="line-code">
+                        <code>handle(command: TCommand): Promise&lt;TResult&gt;;</code>
+                    </div>
+                    <div class="line-meaning">
+                        <h4>El método más importante</h4>
+                        <p>TODOS los handlers DEBEN tener este método. Recibe un comando del tipo específico TCommand y retorna una Promise con el resultado específico TResult. Es async porque generalmente hace operaciones con BD.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generics Section -->
+        <div class="generics-section">
+            <h2 style="color: #667eea; margin-bottom: 2rem;">🧬 ¿Cómo funcionan los Genéricos?</h2>
+            <h3 style="color: #fff; margin-bottom: 2rem;">Flujo de Tipos con Genéricos</h3>
+            
+            <div style="margin-bottom: 2rem;">
+                <div class="generic-box">ICommandHandler&lt;T1, T2&gt;</div>
+            </div>
+            
+            <div style="font-size: 2rem; color: #667eea;">↓</div>
+            
+            <div style="margin: 2rem 0;">
+                <div class="generic-box" style="background: #2d1b69;">CreateUserHandler</div>
+                <span style="color: #888; margin: 0 1rem;">implementa</span>
+                <div class="generic-box">ICommandHandler&lt;CreateUserCommand, CreateUserResult&gt;</div>
+            </div>
+            
+            <div style="margin-top: 2rem; color: #888; font-size: 1.1rem;">
+                <p>T1 = CreateUserCommand (que extends ICommand)</p>
+                <p>T2 = CreateUserResult (que extends ICommandResult)</p>
+            </div>
+            
+            <div class="purpose-box" style="margin-top: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <h4>💡 Ventaja de los Genéricos</h4>
+                <p>TypeScript ahora SABE que CreateUserHandler:</p>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Solo puede recibir CreateUserCommand como parámetro</li>
+                    <li>DEBE retornar CreateUserResult</li>
+                    <li>Te dará error si intentas pasar otro tipo de comando</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ICommand Bus -->
+        <div class="section" style="margin-top: 3rem;">
+            <h2 class="section-title">🚌 Bus de Comandos</h2>
+            
+            <div class="interface-card">
+                <div class="interface-name">ICommandBus</div>
+                <div class="file-path">cqrs/ICommandBus.ts</div>
+                
+                <div class="code-block">
+                    <pre><span class="keyword">import</span> { <span class="type">ICommand</span> } <span class="keyword">from</span> <span class="string">"./ICommand"</span>;
+<span class="keyword">import</span> { <span class="type">ICommandResult</span> } <span class="keyword">from</span> <span class="string">"./ICommandResult"</span>;
+
+<span class="keyword">export interface</span> <span class="type">ICommandBus</span> {
+    <span class="highlight">send</span>&lt;<span class="type">TResult</span> <span class="keyword">extends</span> <span class="type">ICommandResult</span>&gt;(command: <span class="type">ICommand</span>): <span class="type">Promise</span>&lt;<span class="type">TResult</span>&gt;;
+}</pre>
+                </div>
+                
+                <div class="purpose-box">
+                    <h4>🎯 ¿Para qué sirve?</h4>
+                    <p>El CommandBus es el ORQUESTADOR central. Es el punto único de entrada para TODOS los comandos. Su trabajo es:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Recibir cualquier comando</li>
+                        <li>Validarlo (llamando a command.validate())</li>
+                        <li>Encontrar el handler correcto</li>
+                        <li>Ejecutar el handler</li>
+                        <li>Retornar el resultado tipado</li>
+                    </ul>
+                </div>
+                
+                <div class="usage-box">
+                    <h4>📍 ¿Dónde se usa?</h4>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>En los servicios de aplicación (UserService, AuthService, etc.)</li>
+                        <li>Es inyectado como dependencia</li>
+                        <li>NUNCA en los handlers (evita dependencias circulares)</li>
+                    </ul>
+                </div>
+                
+                <div class="example-box">
+                    <h4>💡 Ejemplo de implementación del CommandBus</h4>
+                    <div class="code-block">
+                        <pre><span class="keyword">export class</span> <span class="type">CommandBus</span> <span class="keyword">implements</span> <span class="type">ICommandBus</span> {
+    <span class="keyword">private</span> handlers = <span class="keyword">new</span> <span class="type">Map</span>&lt;<span class="type">string</span>, <span class="type">ICommandHandler</span>&lt;<span class="type">ICommand</span>, <span class="type">ICommandResult</span>&gt;&gt;();
+    
+    <span class="comment">// Registrar handler para un comando</span>
+    <span class="highlight">register</span>&lt;<span class="type">TCommand</span> <span class="keyword">extends</span> <span class="type">ICommand</span>, <span class="type">TResult</span> <span class="keyword">extends</span> <span class="type">ICommandResult</span>&gt;(
+        commandType: <span class="keyword">new</span> (...args: <span class="type">unknown</span>[]) => <span class="type">TCommand</span>,
+        handler: <span class="type">ICommandHandler</span>&lt;<span class="type">TCommand</span>, <span class="type">TResult</span>&gt;
+    ): <span class="type">void</span> {
+        <span class="keyword">this</span>.handlers.set(commandType.name, handler <span class="keyword">as</span> <span class="type">ICommandHandler</span>&lt;<span class="type">ICommand</span>, <span class="type">ICommandResult</span>&gt;);
+    }
+    
+    <span class="comment">// Enviar comando para ejecutar</span>
+    <span class="keyword">async</span> <span class="highlight">send</span>&lt;<span class="type">TResult</span> <span class="keyword">extends</span> <span class="type">ICommandResult</span>&gt;(
+        command: <span class="type">ICommand</span>
+    ): <span class="type">Promise</span>&lt;<span class="type">TResult</span>&gt; {
+        <span class="comment">// 1. Validar comando</span>
+        <span class="keyword">await</span> command.validate();
+        
+        <span class="comment">// 2. Buscar handler</span>
+        <span class="keyword">const</span> handler = <span class="keyword">this</span>.handlers.get(command.constructor.name);
+        <span class="keyword">if</span> (!handler) {
+            <span class="keyword">throw new</span> <span class="type">Error</span>(<span class="string">`No handler found for ${command.constructor.name}`</span>);
+        }
+        
+        <span class="comment">// 3. Ejecutar handler</span>
+        <span class="keyword">return</span> handler.handle(command) <span class="keyword">as</span> <span class="type">Promise</span>&lt;<span class="type">TResult</span>&gt;;
+    }
+}</pre>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #1e1e3a 0%, #2d2d4a 100%); border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;">
+                    <h4 style="color: #bd93f9; margin-bottom: 1rem;">🔄 Flujo del CommandBus</h4>
+                    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;">
+                        <span style="background: #1a1a1a; padding: 0.5rem 1rem; border-radius: 8px;">Recibe comando</span>
+                        <span style="color: #bd93f9;">→</span>
+                        <span style="background: #1a1a1a; padding: 0.5rem 1rem; border-radius: 8px;">Valida</span>
+                        <span style="color: #bd93f9;">→</span>
+                        <span style="background: #1a1a1a; padding: 0.5rem 1rem; border-radius: 8px;">Busca handler</span>
+                        <span style="color: #bd93f9;">→</span>
+                        <span style="background: #1a1a1a; padding: 0.5rem 1rem; border-radius: 8px;">Ejecuta</span>
+                        <span style="color: #bd93f9;">→</span>
+                        <span style="background: #1a1a1a; padding: 0.5rem 1rem; border-radius: 8px;">Retorna resultado</span>
+                    </div>
+                </div>
+                
+                <div class="example-box" style="margin-top: 1.5rem;">
+                    <h4>💡 Ejemplo de uso en un servicio</h4>
+                    <div class="code-block">
+                        <pre><span class="keyword">export class</span> <span class="type">UserService</span> {
+    <span class="keyword">constructor</span>(<span class="keyword">private</span> commandBus: <span class="type">ICommandBus</span>) {}
+    
+    <span class="keyword">async</span> <span class="highlight">createUser</span>(email: <span class="type">string</span>, password: <span class="type">string</span>): <span class="type">Promise</span>&lt;<span class="type">CreateUserResult</span>&gt; {
+        <span class="comment">// Crear comando</span>
+        <span class="keyword">const</span> command = <span class="keyword">new</span> <span class="type">CreateUserCommand</span>(email, password);
+        
+        <span class="comment">// Enviar al bus (el bus se encarga de todo)</span>
+        <span class="keyword">return</span> <span class="keyword">await this</span>.commandBus.send&lt;<span class="type">CreateUserResult</span>&gt;(command);
+    }
+}</pre>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #2d1b69 0%, #1a1a1a 100%); border-radius: 12px; padding: 2rem; margin-top: 2rem; border: 1px solid #667eea;">
+                    <h4 style="color: #50fa7b; margin-bottom: 1rem; font-size: 1.3rem;">✨ Ventajas del CommandBus</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                            <strong style="color: #667eea;">Desacoplamiento</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">El servicio no conoce qué handler ejecuta el comando</p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                            <strong style="color: #667eea;">Punto único de entrada</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Todos los comandos pasan por aquí</p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                            <strong style="color: #667eea;">Validación centralizada</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Valida ANTES de ejecutar cualquier handler</p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                            <strong style="color: #667eea;">Fácil testing</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Puedes mockear el bus en las pruebas</p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                            <strong style="color: #667eea;">Logging/Auditoría</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Un solo lugar para loggear todos los comandos</p>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px;">
+                            <strong style="color: #667eea;">Middlewares</strong>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Puedes agregar lógica transversal fácilmente</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture Diagram -->
+        <div class="section" style="background: #0f0f0f; border: 2px solid #333; border-radius: 16px; padding: 2rem; margin: 3rem 0;">
+            <h2 style="text-align: center; color: #667eea; margin-bottom: 2rem;">🏗️ Arquitectura Completa CQRS</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <!-- Write Side -->
+                <div style="background: linear-gradient(135deg, #2d1b1b 0%, #1a0f0f 100%); border: 2px solid #ff5555; border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="color: #ff5555; text-align: center; margin-bottom: 1rem;">📝 Escritura (Commands)</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                        <div class="flow-step" style="width: 80%;">Cliente</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Controller</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Service</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%; border-color: #ff5555;">CommandBus</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Handler</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Repository</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Write DB</div>
+                    </div>
+                </div>
+                
+                <!-- Read Side -->
+                <div style="background: linear-gradient(135deg, #1b2d1b 0%, #0f1a0f 100%); border: 2px solid #50fa7b; border-radius: 12px; padding: 1.5rem;">
+                    <h3 style="color: #50fa7b; text-align: center; margin-bottom: 1rem;">📖 Lectura (Queries)</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+                        <div class="flow-step" style="width: 80%;">Cliente</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Controller</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Service</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%; border-color: #50fa7b;">QueryBus</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Handler</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Repository</div>
+                        <span class="arrow" style="transform: rotate(90deg);">→</span>
+                        <div class="flow-step" style="width: 80%;">Read DB</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; color: #888;">
+                <p style="font-size: 1.1rem;">💡 El CommandBus y QueryBus son los puntos centrales que orquestan todo el flujo</p>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-section">
+            <h2 class="summary-title">🎯 Resumen: ¿Por qué ICommandHandler es así?</h2>
+            
+            <div class="summary-list">
+                <p>1. <strong>Genéricos &lt;TCommand, TResult&gt;</strong> → Permiten type safety específico para cada handler</p>
+                <p>2. <strong>extends ICommand</strong> → Garantiza que todos los comandos se puedan validar</p>
+                <p>3. <strong>extends ICommandResult</strong> → Garantiza respuestas consistentes</p>
+                <p>4. <strong>handle() method</strong> → Un solo método, una sola responsabilidad</p>
+                <p>5. <strong>Promise&lt;TResult&gt;</strong> → Async porque casi siempre hay I/O (BD, APIs)</p>
+            </div>
+            
+            <div class="key-point">
+                <h3>✅ La Clave</h3>
+                <p style="font-size: 1.2rem;">ICommandHandler es el CONTRATO que garantiza que todos los handlers sean consistentes, type-safe y tengan una sola responsabilidad. Es la pieza central que hace que CQRS funcione correctamente.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

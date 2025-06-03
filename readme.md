@@ -735,3 +735,97 @@ En la clase 9 se trataron los siguientes temas:
 - Capas cuando se une con DDD
 - Implementacion del Repo. 
 - Empaquetado profesional - Concepto
+
+
+## Clase 10
+Grabacion: https://drive.google.com/file/d/1wfcKDPN-XmdzMzua8xQqaP2HQ-6aryOt/view?usp=sharing
+
+* Fuentes del proyecto en la rama (dev-hexagonal-v5)
+* Página de bases sobre CQRS (Recursos/CLASE-10-cqrs-bases.html)
+
+### **Temas tratados en clase**
+
+En la clase 10 se implementó:
+- Gestión completa de usuarios con arquitectura hexagonal
+- Implementación de patrones CQRS 
+- Repositorios con datos de prueba
+- Casos de uso para operaciones CRUD
+- Command Handlers para escritura
+
+### **Resumen de Implementación - Repositorios y CQRS**
+
+#### **📁 Modificaciones en Repositorio**
+
+##### **Repository Interface**
+• Se agregó método `findAll(): Promise<User[]>` al contrato
+
+##### **Repository Implementation** 
+• Se implementó método `seedData()` con 3 usuarios de prueba (efajardo, juan, pepe)
+• Se agregó método `findAll()` que retorna todos los usuarios del Map
+• Los usuarios se almacenan con `this.users.set(element.id, element)`
+
+#### **🔄 Implementación CQRS**
+
+##### **DTOs de Comando**
+• **CreateUserCommandDto**: Contiene email, password, name
+• **CreateUserCommandResultDto**: Contiene id y success boolean
+
+##### **Comando**
+• **CreateUserCommand**: Implementa ICommand con datos del DTO
+• Incluye método `validate()` con validaciones:
+  - Email requerido y debe contener '@'
+  - Password requerido con mínimo 8 caracteres  
+  - Name requerido
+• Lanza Error con lista de errores si hay validaciones fallidas
+
+##### **Command Result**
+• **CreateUserCommandResult**: Extiende ICommandResult
+• Incluye propiedades opcionales: userId y data
+• Estructura para manejar éxito/fallo del comando
+
+##### **Command Handler**
+• **CreateUserCommandHandler**: Implementa ICommandHandler
+• Flujo del método `handle()`:
+  - Valida el comando
+  - Verifica si email ya existe
+  - Crea nuevo usuario con ID generado
+  - Guarda en repository
+  - Retorna resultado con éxito/fallo
+• Incluye normalización de datos (toLowerCase, trim)
+• Manejo de errores con try/catch
+
+#### **🏗️ Estructura CQRS Implementada**
+
+##### **Interfaces Base**
+• **ICommand**: Base para todos los comandos
+• **ICommandResult**: Base para resultados de comandos
+• **ICommandHandler**: Base para manejadores de comandos
+
+##### **Casos de Uso Implementados**
+• **ListUsersUseCase**: Obtiene usuarios del repository y mapea a DTO (sin password)
+• **CreateUserUseCase**: Verifica email duplicado, crea usuario y retorna resultado
+
+##### **Servicios de Aplicación**
+• **UserApplicationService**: Coordina casos de uso
+• Métodos: `listUsers()` y `createUser()`
+• Inyecta ambos casos de uso en constructor
+
+#### **🔧 Controladores y Rutas**
+
+##### **UserController**
+• Método `run()`: Lista usuarios (GET)
+• Método `create()`: Crea usuario (POST)
+• Manejo de errores con try/catch en ambos métodos
+• Respuestas estructuradas con success, data y mensajes
+
+##### **Rutas Implementadas**
+• **GET /users**: Lista todos los usuarios
+• **POST /users**: Crea nuevo usuario
+
+#### **📝 Registro en IoC Container**
+• Se registraron como singleton:
+  - listUsersUseCase
+  - createUserUseCase  
+  - userApplicationService
+  - userController
+• Todos con patrón `asClass().singleton()`
