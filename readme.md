@@ -741,7 +741,7 @@ En la clase 9 se trataron los siguientes temas:
 Grabacion: https://drive.google.com/file/d/1wfcKDPN-XmdzMzua8xQqaP2HQ-6aryOt/view?usp=sharing
 
 * Fuentes del proyecto en la rama (dev-hexagonal-v5)
-* Página de bases sobre CQRS (Recursos/CLASE-10-cqrs-bases.html)
+* [Página de bases sobre CQRS](Recursos/CLASE-10-cqrs-bases.html)
 
 ### **Temas tratados en clase**
 
