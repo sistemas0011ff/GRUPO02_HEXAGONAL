@@ -1,4 +1,4 @@
-import { asClass, createContainer, InjectionMode } from "awilix";
+import { asClass, asFunction, createContainer, InjectionMode } from "awilix";
 import { AuthController } from "../controllers/auth.controller";
 import { HealthController } from "../controllers/health.controller";
 import { AuthApplicationService } from "../../context/auth/application/services/auth-application.service";
@@ -9,6 +9,8 @@ import { ListUsersUseCase } from "../../context/auth/application/use-cases/listU
 import { UserApplicationService } from "../../context/auth/application/services/userApplication.service";
 import { UserController } from "../controllers/user.controller";
 import { CreateUserUseCase } from "../../context/auth/application/use-cases/createUser.useCase";
+import { CreateUserCommandHandler } from "../../context/auth/application/commands/CreateUserCommandHandler";
+import { CommandBus } from "../../context/shared/CommandBus";
 
 const container = createContainer({
     injectionMode: InjectionMode.CLASSIC
@@ -32,6 +34,12 @@ container.register({
 
     //Repo
     userRepository: asClass(InMemoryUserRepository).singleton(),
+    createUserCommandHandler: asClass(CreateUserCommandHandler).singleton(),
+
+    commandBus: asFunction(()=>{
+        //inyectarle el contendor al commandbus
+        return new CommandBus(container);
+    }).singleton(),
 
 });
 
