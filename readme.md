@@ -829,3 +829,185 @@ En la clase 10 se implementó:
   - userApplicationService
   - userController
 • Todos con patrón `asClass().singleton()`
+
+## Clase 11
+Grabacion: https://drive.google.com/file/d/18fiS9cehopxN9qamK5v9U10ak_fYyRed/view?usp=sharing
+
+* Fuentes del proyecto en la rama (dev-hexagonal-v6)
+* [Flujo base CQRS](Recursos/CLASE11-im1.png)
+
+### **Temas tratados en clase**
+
+En la clase 11 se implementó:
+- Patrón Command Bus para desacoplar comandos de sus handlers
+- Implementación completa del Command Handler con inyección de dependencias
+- Resolución dinámica de handlers basada en convenciones de nomenclatura
+- Sistema de caché para optimizar la resolución de handlers
+
+### **🚌 Implementación del Command Bus**
+
+#### **Command Bus - Núcleo del Sistema**
+
+El Command Bus actúa como un mediador entre los comandos y sus respectivos handlers, proporcionando:
+
+```typescript
+export class CommandBus implements ICommandBus {
+    private handlers = new Map<string, ICommandHandler<ICommand, ICommandResult>>();
+
+    constructor(private readonly container: AwilixContainer) {
+        // Registro automático de handlers disponibles en el contenedor
+        const registrations = Object.keys(this.container.registrations);
+        registrations.forEach(key => {
+            if (key.includes('Handler') || key.includes('handler')) {
+                console.log(` - ${key}`);
+            }
+        });
+    }
+}
+```
+
+#### **📋 Funcionalidades Principales**
+
+##### **1. Validación y Ejecución de Comandos**
+```typescript
+async send<TResult extends ICommandResult>(command: ICommand): Promise<TResult> {
+    // Paso 1: Validación del comando antes de ejecutarlo
+    await command.validate();
+
+    // Paso 2: Búsqueda del handler correspondiente
+    let handler = this.handlers.get(command.constructor.name);
+
+    // Si no está en caché, resolución dinámica
+    if (!handler) {
+        const resolveHandler = this.resolveHandlerDynmically(command.constructor.name);
+        
+        if (resolveHandler) {
+            // Registro en caché para futuras ejecuciones
+            this.handlers.set(command.constructor.name, resolveHandler);
+            handler = resolveHandler;
+        }
+    }
+
+    // Ejecución del handler
+    return handler?.handle(command) as Promise<TResult>;
+}
+```
+
+##### **2. Resolución Dinámica de Handlers**
+```typescript
+private resolveHandlerDynmically(commandName: string): ICommandHandler<ICommand, ICommandResult> | null {
+    try {
+        const handlerKey = this.getHandlerKey(commandName);
+        
+        // Verificación de registro en el contenedor
+        if (!this.container.hasRegistration(handlerKey)) {
+            console.warn(`key ${handlerKey} no está registrado en el contenedor`);
+            return null;
+        }
+
+        // Resolución del handler desde el contenedor IoC
+        const handler = this.container.resolve<ICommandHandler<ICommand, ICommandResult>>(handlerKey);
+        console.log(`Handler: ${handlerKey} para comando ${commandName}`);
+        return handler;
+
+    } catch (error) {
+        console.error(`Error al resolver handler: ${commandName}`, error);
+        return null;
+    }
+}
+```
+
+##### **3. Convención de Nomenclatura**
+```typescript
+private getHandlerKey(commandName: string): string {
+    // Conversión: CreateUserCommand → createUserCommandHandler
+    const handlerName = commandName.replace("Command", "CommandHandler");
+    return handlerName.charAt(0).toLowerCase() + handlerName.slice(1);
+}
+```
+
+#### **🔧 Registro en el Contenedor IoC**
+
+##### **Registro del Command Bus**
+```typescript
+// app/di/index.ts
+commandBus: asFunction(() => {
+    // Crear CommandBus con referencia al container
+    return new CommandBus(container);
+}).singleton(),
+```
+
+##### **Registro del Command Handler**
+```typescript
+createUserCommandHandler: asClass(CreateUserCommandHandler).singleton(),
+```
+
+#### **🏗️ Integración con Casos de Uso**
+
+##### **Modificación del Use Case**
+```typescript
+export class CreateUserUseCase implements ICreateUserUseCase {
+    constructor(private readonly commandBus: ICommandBus) {}
+
+    async execute(userData: CreateUserDto): Promise<CreateUserResultDto> {
+        console.log("INI - CreateUserUseCase - Orquestando creación de usuario");
+
+        try {
+            // Crear comando con DTO
+            const command = new CreateUserCommand({
+                email: userData.email,
+                password: userData.password,
+                name: userData.name
+            });
+
+            // Enviar comando a través del command bus
+            const result: CreateUserCommandResult = await this.commandBus.send(command);
+
+            if (!result.success) {
+                throw new Error(result.message || "Error al crear usuario");
+            }
+
+            // Retornar DTO de resultado
+            return result.data!;
+
+        } catch (error) {
+            console.error("Error en CreateUserUseCase:", error);
+            throw error;
+        }
+    }
+}
+```
+
+### **🎯 Beneficios de la Implementación**
+
+#### **Desacoplamiento Total**
+- Los casos de uso no conocen directamente los command handlers
+- El Command Bus actúa como mediador transparente
+- Facilita el testing y el intercambio de implementaciones
+
+#### **Resolución Automática**
+- Los handlers se resuelven dinámicamente por convención de nombres
+- Sistema de caché para optimizar el rendimiento
+- Registro automático en el contenedor IoC
+
+#### **Escalabilidad**
+- Fácil adición de nuevos comandos y handlers
+- Mantenimiento simplificado del código
+- Separación clara de responsabilidades
+
+#### **Validación Centralizada**
+- Todas las validaciones se ejecutan antes del handler
+- Consistencia en el manejo de errores
+- Trazabilidad completa del flujo de comandos
+
+### **📝 Flujo Completo Implementado**
+
+1. **Controller** → Recibe petición HTTP
+2. **Use Case** → Crea comando y lo envía al Command Bus
+3. **Command Bus** → Valida comando y resuelve handler dinámicamente
+4. **Command Handler** → Ejecuta lógica de negocio
+5. **Repository** → Persiste/recupera datos
+6. **Response** → Retorna resultado estructurado
+
+Esta implementación garantiza una arquitectura limpia, mantenible y escalable siguiendo los 
+principios SOLID y las mejores prácticas de arquitectura hexagonal con CQRS.
