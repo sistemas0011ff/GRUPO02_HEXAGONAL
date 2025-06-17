@@ -1,5 +1,3 @@
-import { CreateUserCommand } from "../auth/application/commands/CreateUserCommand";
-import { CreateUserCommandResult } from "../auth/application/commands/CreateUserCommandResult";
 import { ICommand } from "./ICommand";
 import { ICommandBus } from "./ICommandBus";
 import { ICommandHandler } from "./ICommandHandler";

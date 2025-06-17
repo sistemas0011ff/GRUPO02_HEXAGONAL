@@ -11,6 +11,9 @@ import { UserController } from "../controllers/user.controller";
 import { CreateUserUseCase } from "../../context/auth/application/use-cases/createUser.useCase";
 import { CreateUserCommandHandler } from "../../context/auth/application/commands/CreateUserCommandHandler";
 import { CommandBus } from "../../context/shared/CommandBus";
+import { GetUserByIdQueryHandler } from "../../context/auth/application/queries/GetUserByIdQueryHandler";
+import { GetAllUsersQueryHandler } from "../../context/auth/application/queries/GetAllUsersQueryHandler";
+import { QueryBus } from "../../context/shared/QuerydBus";
 
 const container = createContainer({
     injectionMode: InjectionMode.CLASSIC
@@ -36,10 +39,20 @@ container.register({
     userRepository: asClass(InMemoryUserRepository).singleton(),
     createUserCommandHandler: asClass(CreateUserCommandHandler).singleton(),
 
+    //Query Handlers
+    getUserByIdQueryHandler: asClass(GetUserByIdQueryHandler).singleton(),
+    getAllUsersQueryHandler: asClass(GetAllUsersQueryHandler).singleton(),
+
+    //Buses
     commandBus: asFunction(()=>{
         //inyectarle el contendor al commandbus
         return new CommandBus(container);
-    }).singleton(),
+    }).singleton(), 
+
+    queryBus: asFunction(()=>{
+        //inyectarle el contendor al commandbus
+        return new QueryBus(container);
+    }).singleton(), 
 
 });
 

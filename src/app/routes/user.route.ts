@@ -5,5 +5,6 @@ export const register = (router: Router) : void => {
     const controller  =  container.resolve("userController");
 
     router.get("/users", controller.run);
+    router.get("/users/:id", controller.getById);
     router.post("/users", controller.create);
 }
