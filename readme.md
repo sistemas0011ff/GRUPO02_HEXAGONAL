@@ -1011,3 +1011,47 @@ export class CreateUserUseCase implements ICreateUserUseCase {
 
 Esta implementación garantiza una arquitectura limpia, mantenible y escalable siguiendo los 
 principios SOLID y las mejores prácticas de arquitectura hexagonal con CQRS.
+
+# Clase 12
+Grabacion: https://drive.google.com/file/d/1jjUVgMhatNxnfGTMkixpV4Q4go_PXLYh/view?usp=sharing
+
+* Fuentes del proyecto en la rama (dev-hexagonal-v7)
+* [Flujo base Queries CQRS](Recursos/CLASE12-im1.png)
+
+## **Temas tratados en clase**
+
+En la clase 12 se implementó:
+- Patrón Query Bus para separar las consultas de las operaciones de escritura
+- Implementación del Query Handler con inyección de dependencias
+- Resolución dinámica de query handlers
+- Inyección directa de buses en controllers
+
+### **🔍 Implementación del Query Bus**
+
+#### **Query Bus**
+* Maneja operaciones de lectura con método `ask()`
+* Resolución automática: GetAllUsersQuery → getAllUsersQueryHandler
+* Registro automático de query handlers
+
+#### **Query Handlers**
+* **GetAllUsersQueryHandler**: Consulta de usuarios con filtros opcionales
+* Mapeo a DTOs sin información sensible
+* Manejo de errores estructurado
+
+#### **Integración Directa en Controller**
+* **UserController**: Inyección directa del Query Bus y Command Bus
+* **GET /users**: Usa Query Bus directamente
+* **POST /users**: Usa Command Bus directamente
+* Eliminación de Use Cases intermedios
+
+### **🔧 Registro en el Contenedor IoC**
+* **queryBus**: Registrado como singleton
+* **getAllUsersQueryHandler**: Registrado como singleton
+
+### **🎯 Beneficios CQRS**
+* Separación clara: Command Bus (escritura) vs Query Bus (lectura)
+* Optimización específica para cada operación
+* Escalabilidad independiente
+
+### **📝 Flujo Implementado**
+**Queries**: Controller → Query Bus → Query Handler → Repository → Response 
