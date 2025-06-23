@@ -1055,3 +1055,120 @@ En la clase 12 se implementó:
 
 ### **📝 Flujo Implementado**
 **Queries**: Controller → Query Bus → Query Handler → Repository → Response 
+
+# Clase 13
+Grabacion: https://drive.google.com/file/d/1nVpVuJHqkKlZgbsFAZSbdhGFsMT59njt/view?usp=sharing
+* Guía completa de ZooKeeper simulando Kafka
+* [Diagrama Arquitectura Kafka-ZooKeeper](Recursos/CLASE13-zookeeper-kafka-p1.md)
+* [Dcoker Compose](Recursos/CLASE13-docker-compose.yml)
+
+## **Temas tratados en clase**
+En la clase 13 se exploró:
+- Conceptos fundamentales de ZooKeeper como sistema de coordinación
+- Simulación práctica de un cluster Kafka usando ZooKeeper
+- Tipos de znodes (persistentes, efímeros, secuenciales)
+- Sistema de watchers para notificaciones en tiempo real
+- Manejo de fallas y reelección de líderes
+
+### **🔍 Conceptos Fundamentales de ZooKeeper**
+
+#### **Znodes (Nodos)**
+* **Persistentes**: Permanecen hasta eliminación manual
+* **Efímeros (-e)**: Desaparecen automáticamente al perder conexión
+* **Secuenciales (-s)**: ZooKeeper añade números únicos automáticamente
+* Comando verificación: `stat /path` (ephemeralOwner != 0x0 = efímero)
+
+#### **Watchers**
+* Sistema de notificaciones en tiempo real
+* Tipos: `ls -w`, `get -w`, `stat -w`
+* Eventos: NodeCreated, NodeDeleted, NodeDataChanged, NodeChildrenChanged
+* One-time: Se disparan una sola vez
+
+### **🎯 Arquitectura Kafka Simulada**
+
+#### **Estructura Base**
+```
+/kafka-simulation/
+├── /brokers/
+│   ├── /ids/           # Brokers activos (efímeros)
+│   └── /topics/        # Metadata de topics
+├── /controller/        # Coordinador del cluster (efímero)
+└── /consumers/         # Grupos de consumidores
+```
+
+#### **Conceptos Kafka Implementados**
+* **Brokers**: Servidores que almacenan mensajes (nodos efímeros)
+* **Topics**: Categorías de mensajes distribuidas entre brokers
+* **Partitions**: Divisiones de topics para procesamiento paralelo
+* **Leader**: Broker asignado a cada partición
+* **Controller**: Broker que coordina el cluster
+
+### **🔧 Simulación Práctica Realizada**
+
+#### **Paso 1: Registro de Brokers**
+```bash
+create -e /brokers/ids/0 '{"host":"servidor1.com","port":9092}'
+create -e /brokers/ids/1 '{"host":"servidor2.com","port":9092}'
+```
+
+#### **Paso 2: Creación de Topics**
+```bash
+# Topic "ventas" con 3 particiones distribuidas
+/topics/ventas/partitions/0/state {"leader":0}
+/topics/ventas/partitions/1/state {"leader":1}
+/topics/ventas/partitions/2/state {"leader":2}
+```
+
+#### **Paso 3: Simulación de Fallas**
+* Eliminación de broker → Nodo efímero desaparece
+* Watchers detectan cambio → Notificación instantánea
+* Controller reasigna → Nueva elección de líder
+
+### **📝 Caso Práctico: Sistema de Pedidos**
+* **Escenario**: 2 "cocinas" (brokers) procesando pedidos
+* **Topic "pedidos"**: Distribuido entre ambas cocinas
+* **Falla simulada**: Cocina secundaria cae
+* **Resultado**: Cocina principal asume todas las particiones
+
+### **🎪 Aclaraciones Importantes**
+
+#### **Topics NO están "dentro" de brokers**
+* Los topics se distribuyen ENTRE brokers
+* La ruta `/brokers/topics/` es solo convención histórica
+* Cada partición tiene UN broker líder asignado
+
+#### **Producers vs Consumers**
+* **Producers**: NO se registran en ZooKeeper (conexión directa)
+* **Consumers**: SÍ usan ZooKeeper para coordinación
+
+#### **JSON en ZooKeeper**
+* Siempre usar comillas simples: `'{"key":"value"}'`
+* Crear estructura completa antes de asignar datos
+
+### **🚀 Comandos Clave Aprendidos**
+```bash
+# Docker
+docker-compose up -d
+docker exec -it zookeeper zkCli.sh
+
+# Znodes
+create -e /path "data"              # Efímero
+create -s /path "data"              # Secuencial
+create -e -s /path "data"           # Ambos
+deleteall /path                     # Eliminar recursivo
+
+# Watchers
+ls -w /path                         # Observar hijos
+get -w /path                        # Observar datos
+stat -w /path                       # Observar metadata
+```
+
+### **✅ Beneficios del Sistema**
+* **Alta disponibilidad**: Reelección automática de líderes
+* **Detección de fallas**: Nodos efímeros desaparecen automáticamente
+* **Coordinación distribuida**: Todos ven los mismos datos
+* **Escalabilidad**: Fácil agregar/remover brokers
+* **Notificaciones en tiempo real**: Watchers para reacción inmediata
+
+### **📊 Flujo Implementado**
+**Coordinación**: Broker → ZooKeeper (registro efímero) → Watchers → Detección fallas → Reelección → Nueva asignación
